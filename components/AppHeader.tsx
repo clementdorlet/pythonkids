@@ -66,7 +66,7 @@ export default function AppHeader({ right }: { right?: React.ReactNode }) {
         )}
 
         <nav className="hidden sm:flex items-center gap-1 ml-2">
-          {NAV_LINKS.filter((l) => !(isLocal && l.href === "/friends")).map((link) => (
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -117,7 +117,7 @@ export default function AppHeader({ right }: { right?: React.ReactNode }) {
 
       {open && (
         <div className="sm:hidden border-t border-purple-100 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 px-6 py-4 flex flex-col gap-3">
-          {NAV_LINKS.filter((l) => !(isLocal && l.href === "/friends")).map((link) => (
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
