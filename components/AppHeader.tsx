@@ -92,14 +92,6 @@ export default function AppHeader({ right }: { right?: React.ReactNode }) {
               {profileEmoji}
             </Link>
           )}
-          <Link
-            href="/editor"
-            className={`bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity ${
-              pathname === "/editor" ? "ring-2 ring-purple-300 ring-offset-1" : ""
-            }`}
-          >
-            Coder maintenant
-          </Link>
         </div>
 
         {right && <div className="lg:hidden ml-auto mr-2">{right}</div>}
@@ -137,13 +129,6 @@ export default function AppHeader({ right }: { right?: React.ReactNode }) {
             className={`font-semibold text-sm ${isActive("/profiles") ? "text-purple-600 dark:text-purple-400" : "text-gray-600 dark:text-slate-300"}`}
           >
             {profileEmoji ?? "👤"} Changer de profil
-          </Link>
-          <Link
-            href="/editor"
-            onClick={() => setOpen(false)}
-            className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity text-center"
-          >
-            Coder maintenant
           </Link>
         </div>
       )}

@@ -304,6 +304,14 @@ export default function ProfilePage() {
               <StatChip value={`${streak.currentStreak}j`} label="streak" emoji="🔥" />
               <StatChip value={`${mounted ? earnedBadges.length : 0}`} label="badges" emoji="🏅" />
             </div>
+
+            {/* Bouton Coder maintenant */}
+            <a
+              href="/editor"
+              className="mt-5 w-full max-w-xs flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 active:scale-95 transition-all text-white font-bold text-sm rounded-2xl py-3 shadow-lg"
+            >
+              <span className="text-lg">💻</span> Coder maintenant
+            </a>
           </div>
         </div>
 
