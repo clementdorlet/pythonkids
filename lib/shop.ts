@@ -12,6 +12,7 @@ export interface ShopItem {
   price: number;
   description: string;
   gradient?: string;
+  secret?: boolean; // non affiché dans la boutique, débloquable par code promo uniquement
 }
 
 export const SHOP_SKINS: ShopItem[] = [
@@ -39,6 +40,8 @@ export const SHOP_SKINS: ShopItem[] = [
   { id: "skin_celestial", name: "Céleste",           emoji: "✨", type: "skin", rarity: "legendary", price: 1000, description: "Lumière divine",                gradient: "from-amber-300 to-purple-600"   },
   { id: "skin_diamond",   name: "Diamant",           emoji: "💎", type: "skin", rarity: "legendary", price: 1000, description: "Pureté cristalline",            gradient: "from-sky-200 to-indigo-400"     },
   { id: "skin_void",      name: "Néant",             emoji: "🌑", type: "skin", rarity: "legendary", price: 1000, description: "L'obscurité absolue",           gradient: "from-gray-900 to-slate-950"     },
+  // Skin secret — uniquement via code promo
+  { id: "skin_serpent",   name: "Écailles de Serpent", emoji: "🐍", type: "skin", rarity: "legendary", price: 0, description: "Le skin légendaire des vrais Pythonistes", gradient: "from-green-900 via-emerald-600 to-lime-400", secret: true },
 ];
 
 export const SHOP_STICKERS: ShopItem[] = [
@@ -89,6 +92,15 @@ export function getEquippedSkin(): string | null {
 export function getEquippedStickers(): string[] {
   if (typeof window === "undefined") return [];
   try { return JSON.parse(localStorage.getItem(KEY_STICKERS) ?? "[]"); } catch { return []; }
+}
+
+export function grantItem(itemId: string): boolean {
+  const owned = getOwnedShopItems();
+  if (owned.includes(itemId)) return false;
+  owned.push(itemId);
+  localStorage.setItem(KEY_OWNED, JSON.stringify(owned));
+  window.dispatchEvent(new Event("pythonkids:shop"));
+  return true;
 }
 
 export function purchaseItem(itemId: string): boolean {

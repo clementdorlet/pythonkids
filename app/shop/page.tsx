@@ -5,7 +5,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import AppHeader from "@/components/AppHeader";
 import {
   SHOP_SKINS, SHOP_STICKERS, getOwnedShopItems, getEquippedSkin,
-  getEquippedStickers, purchaseItem, equipSkin, toggleSticker,
+  getEquippedStickers, purchaseItem, equipSkin, toggleSticker, grantItem,
   RARITY_COLORS_SHOP, RARITY_LABELS_SHOP, RARITY_BORDER_SHOP,
   type ShopItem,
 } from "@/lib/shop";
@@ -25,12 +25,14 @@ const GEM_PACKS = [
   { id: "gems_1500", label: "Trésor",  amount: 1500, price: "19,99 €", bonus: "BEST",  color: "from-yellow-400 to-orange-500", emoji: "🌟" },
 ] as const;
 
-const PROMO_CODES: Record<string, number> = {
-  BIENVENUE:     50,
-  PYTHON2025:   100,
-  STREAKMASTER:  75,
-  DUELCHAMPION: 120,
-  MILLIONNAIRE: 1000000,
+type PromoReward = { gems: number } | { skinId: string; skinName: string };
+const PROMO_CODES: Record<string, PromoReward> = {
+  BIENVENUE:        { gems: 50 },
+  PYTHON2025:       { gems: 100 },
+  STREAKMASTER:     { gems: 75 },
+  DUELCHAMPION:     { gems: 120 },
+  MILLIONNAIRE:     { gems: 1000000 },
+  SERPENTMAGIQUE:   { skinId: "skin_serpent", skinName: "Écailles de Serpent" },
 };
 const USED_CODES_KEY = "pythonkids_used_codes";
 
@@ -118,7 +120,8 @@ export default function ShopPage() {
   const [activeTheme, setActiveTheme] = useState("default");
   const [boughtPack, setBoughtPack] = useState<string | null>(null);
   const [promoInput, setPromoInput] = useState("");
-  const [promoStatus, setPromoStatus] = useState<"idle" | "ok" | "used" | "invalid">("idle");
+  const [promoStatus, setPromoStatus] = useState<"idle" | "ok" | "ok_skin" | "used" | "invalid">("idle");
+  const [promoSkinName, setPromoSkinName] = useState("");
 
   const refresh = () => {
     setGems(getGems());
@@ -159,24 +162,35 @@ export default function ShopPage() {
   const redeemPromo = () => {
     const code = promoInput.trim().toUpperCase();
     if (!code) return;
-    const amount = PROMO_CODES[code];
-    if (!amount) { setPromoStatus("invalid"); return; }
+    const reward = PROMO_CODES[code];
+    if (!reward) { setPromoStatus("invalid"); return; }
     try {
       const used: string[] = JSON.parse(localStorage.getItem(USED_CODES_KEY) ?? "[]");
       if (used.includes(code)) { setPromoStatus("used"); return; }
       used.push(code);
       localStorage.setItem(USED_CODES_KEY, JSON.stringify(used));
     } catch {}
-    addGems(amount);
-    refresh();
-    setPromoInput("");
-    setPromoStatus("ok");
-    window.dispatchEvent(new CustomEvent("pythonkids:toast", {
-      detail: { msg: `Code promo : +${amount} gemmes !`, emoji: "🎁", type: "normal" },
-    }));
+    if ("gems" in reward) {
+      addGems(reward.gems);
+      refresh();
+      setPromoInput("");
+      setPromoStatus("ok");
+      window.dispatchEvent(new CustomEvent("pythonkids:toast", {
+        detail: { msg: `Code promo : +${reward.gems} gemmes !`, emoji: "🎁", type: "normal" },
+      }));
+    } else {
+      grantItem(reward.skinId);
+      refresh();
+      setPromoInput("");
+      setPromoSkinName(reward.skinName);
+      setPromoStatus("ok_skin");
+      window.dispatchEvent(new CustomEvent("pythonkids:toast", {
+        detail: { msg: `Skin secret débloqué : ${reward.skinName} !`, emoji: "🐍", type: "normal" },
+      }));
+    }
   };
 
-  const items = tab === "skins" ? SHOP_SKINS : SHOP_STICKERS;
+  const items = (tab === "skins" ? SHOP_SKINS : SHOP_STICKERS).filter((i) => !i.secret || (mounted && owned.includes(i.id)));
 
   return (
     <div className="min-h-screen">
@@ -498,6 +512,11 @@ export default function ShopPage() {
               {promoStatus === "ok" && (
                 <p className="text-green-600 dark:text-green-400 text-xs font-bold mt-2">
                   ✓ Code validé ! Gemmes ajoutées à ton solde.
+                </p>
+              )}
+              {promoStatus === "ok_skin" && (
+                <p className="text-emerald-600 dark:text-emerald-400 text-xs font-bold mt-2">
+                  🐍 Skin secret débloqué : <span className="underline">{promoSkinName}</span> ! Va l&apos;équiper dans l&apos;onglet Skins.
                 </p>
               )}
               {promoStatus === "used" && (
