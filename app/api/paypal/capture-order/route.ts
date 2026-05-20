@@ -1,4 +1,4 @@
-import { PACK_CATALOG } from "@/app/api/paypal/create-order/route";
+import { PACK_CATALOG } from "@/lib/paypal";
 
 const PAYPAL_API = process.env.PAYPAL_API_URL ?? "https://api-m.sandbox.paypal.com";
 

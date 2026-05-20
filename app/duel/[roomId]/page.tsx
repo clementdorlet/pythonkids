@@ -12,6 +12,8 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { defaultKeymap, indentWithTab, historyKeymap, history } from "@codemirror/commands";
 import { playChallengeWinSound, playErrorSound } from "@/lib/sounds";
 import { addXP } from "@/lib/xp";
+import { addDuelWin } from "@/lib/duels";
+import { calculateScore } from "@/lib/score";
 import { postActivity } from "@/lib/activity";
 import type { DuelRoom } from "@/app/api/duel/route";
 import Confetti from "@/components/Confetti";
@@ -137,8 +139,18 @@ export default function DuelRoomPage() {
     if (iWon && !rewardedRef.current) {
       rewardedRef.current = true;
       addXP(150);
+      addDuelWin();
+      const newScore = calculateScore();
+      const storedUser = localStorage.getItem("pythonkids_username");
+      if (storedUser) {
+        fetch("/api/leaderboard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: storedUser, score: newScore }),
+        }).catch(() => {});
+      }
       window.dispatchEvent(new CustomEvent("pythonkids:toast", {
-        detail: { msg: "Duel gagné ! +150 XP", emoji: "🏆", type: "rank" },
+        detail: { msg: "Duel gagné ! +150 pts +150 XP", emoji: "🏆", type: "rank" },
       }));
       postActivity("challenge", "Duel gagné ⚔️");
     }

@@ -237,6 +237,16 @@ body {
 .avatar-blink { animation: avatar-blink-anim 4.5s ease-in-out infinite; transform-origin: center; }
 .avatar-look  { animation: avatar-look-anim 7s ease-in-out infinite; }
 
+/* ── Podium ── */
+@keyframes podium-grow-anim {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+.podium-bar {
+  transform-origin: bottom;
+  animation: podium-grow-anim 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 /* ── Daily Series ── */
 @keyframes daily-slot-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.7); }

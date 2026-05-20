@@ -377,6 +377,7 @@ export default function ProfilePage() {
                           playerLevel={mounted ? playerLevel : 0}
                           skinGradient={head.gradient}
                           hairColor={head.hairColor}
+                          isStatic
                         />
                       </div>
                     </div>

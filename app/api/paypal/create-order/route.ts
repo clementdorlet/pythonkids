@@ -1,11 +1,6 @@
-const PAYPAL_API = process.env.PAYPAL_API_URL ?? "https://api-m.sandbox.paypal.com";
+import { PACK_CATALOG } from "@/lib/paypal";
 
-export const PACK_CATALOG = {
-  gems_100:  { amount: "1.99",  gems: 100,  description: "100 gemmes PythonKids"  },
-  gems_300:  { amount: "4.99",  gems: 300,  description: "300 gemmes PythonKids"  },
-  gems_700:  { amount: "9.99",  gems: 700,  description: "700 gemmes PythonKids"  },
-  gems_1500: { amount: "19.99", gems: 1500, description: "1500 gemmes PythonKids" },
-} as const;
+const PAYPAL_API = process.env.PAYPAL_API_URL ?? "https://api-m.sandbox.paypal.com";
 
 async function getAccessToken(): Promise<string> {
   const auth = Buffer.from(

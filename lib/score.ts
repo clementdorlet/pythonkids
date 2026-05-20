@@ -2,6 +2,7 @@ import { getProgress } from "./progress";
 import { getCompletedChallenges } from "./challenges";
 import { getStreak } from "./streak";
 import { getChestBonusStars } from "./chests";
+import { getDuelWins } from "./duels";
 
 export function calculateScore(): number {
   if (typeof window === "undefined") return 0;
@@ -26,5 +27,8 @@ export function calculateScore(): number {
   // Bonus coffres : étoiles gagnées en ouvrant les coffres
   const chestBonus = getChestBonusStars();
 
-  return lessonPoints + levelPoints + challengePoints + streakPoints + chestBonus;
+  // Duels gagnés : 150 pts chacun
+  const duelPoints = getDuelWins() * 150;
+
+  return lessonPoints + levelPoints + challengePoints + streakPoints + chestBonus + duelPoints;
 }

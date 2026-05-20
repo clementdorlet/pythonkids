@@ -61,9 +61,10 @@ interface Props {
   skinGradient?: string;
   hairColor?: string;
   equippedCosmeticEmoji?: string;
+  isStatic?: boolean;
 }
 
-export default function PlayerAvatar({ username, playerLevel, skinGradient, hairColor, equippedCosmeticEmoji }: Props) {
+export default function PlayerAvatar({ username, playerLevel, skinGradient, hairColor, equippedCosmeticEmoji, isStatic = false }: Props) {
   const letter = username ? username[0].toUpperCase() : "?";
   const level = Math.min(playerLevel, 5);
   const gradient = skinGradient ?? SKIN_GRADIENTS[level];
@@ -80,10 +81,10 @@ export default function PlayerAvatar({ username, playerLevel, skinGradient, hair
 
   return (
     <div
-      className={`relative mx-auto mb-3 cursor-pointer ${level === 5 ? "avatar-legendary" : ""} ${hovered ? "avatar-dance" : "avatar-float"}`}
+      className={`relative mx-auto mb-3 ${isStatic ? "" : `cursor-pointer ${hovered ? "avatar-dance" : "avatar-float"}`} ${level === 5 ? "avatar-legendary" : ""}`}
       style={{ width: W, height: H }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={isStatic ? undefined : () => setHovered(true)}
+      onMouseLeave={isStatic ? undefined : () => setHovered(false)}
     >
 
       {/* Aura blur */}
@@ -156,8 +157,8 @@ export default function PlayerAvatar({ username, playerLevel, skinGradient, hair
 
           {/* Eyes */}
           <div className="flex" style={{ gap: 13 }}>
-            <BigEye iris={iris} level={level} blinkDelay="0s" />
-            <BigEye iris={iris} level={level} blinkDelay="0.04s" />
+            <BigEye iris={iris} level={level} blinkDelay="0s" isStatic={isStatic} />
+            <BigEye iris={iris} level={level} blinkDelay="0.04s" isStatic={isStatic} />
           </div>
 
           {/* Nose for level 3+ */}
@@ -297,7 +298,7 @@ function Eyebrow({ level, side }: { level: number; side: "left" | "right" }) {
   );
 }
 
-function BigEye({ iris, level, blinkDelay = "0s" }: { iris: { top: string; bot: string }; level: number; blinkDelay?: string }) {
+function BigEye({ iris, level, blinkDelay = "0s", isStatic = false }: { iris: { top: string; bot: string }; level: number; blinkDelay?: string; isStatic?: boolean }) {
   const scW = level >= 3 ? 20 : 18;
   const scH = level >= 3 ? 24 : 22;
   const irW = level >= 3 ? 13 : 11;
@@ -306,14 +307,14 @@ function BigEye({ iris, level, blinkDelay = "0s" }: { iris: { top: string; bot: 
 
   return (
     <div
-      className="avatar-blink"
-      style={{ width: scW, height: scH, background: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 5px rgba(0,0,0,0.25)", position: "relative", overflow: "hidden", animationDelay: blinkDelay }}
+      className={isStatic ? undefined : "avatar-blink"}
+      style={{ width: scW, height: scH, background: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 5px rgba(0,0,0,0.25)", position: "relative", overflow: "hidden", animationDelay: isStatic ? undefined : blinkDelay }}
     >
       {/* Eyelid shadow */}
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: lidH, background: "rgba(0,0,0,0.11)", borderRadius: "50% 50% 0 0" }} />
       {/* Iris — se déplace pour regarder autour */}
       <div
-        className="avatar-look"
+        className={isStatic ? undefined : "avatar-look"}
         style={{ width: irW, height: irH, borderRadius: "50%", background: `linear-gradient(to bottom, ${iris.top}, ${iris.bot})`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}
       >
         {/* Pupil */}

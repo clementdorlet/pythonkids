@@ -17,6 +17,39 @@ const RANK_COLORS = [
 
 const RANK_EMOJIS = ["🥇", "🥈", "🥉"];
 
+const PODIUM_GRADIENTS = [
+  "from-yellow-300 to-amber-500",   // #1 or
+  "from-slate-300 to-gray-500",     // #2 argent
+  "from-orange-300 to-amber-600",   // #3 bronze
+];
+
+const PODIUM_GLOWS = [
+  "0 0 24px rgba(251,191,36,0.7), 0 0 48px rgba(251,191,36,0.3)",
+  "0 0 16px rgba(148,163,184,0.6)",
+  "0 0 16px rgba(251,146,60,0.6)",
+];
+
+const LEVEL_FROM_SCORE = (score: number) => {
+  if (score >= 20000) return "🌟";
+  if (score >= 10000) return "🐍";
+  if (score >= 5000)  return "⚡";
+  if (score >= 2000)  return "💻";
+  if (score >= 500)   return "📝";
+  return "🌱";
+};
+
+function playerGradient(name: string): string {
+  const gradients = [
+    "from-sky-400 to-blue-600", "from-violet-400 to-purple-600",
+    "from-pink-400 to-rose-600", "from-orange-400 to-amber-600",
+    "from-emerald-400 to-teal-600", "from-fuchsia-400 to-pink-600",
+    "from-cyan-400 to-sky-600", "from-yellow-400 to-orange-500",
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffff;
+  return gradients[hash % gradients.length];
+}
+
 function getWeekStart(): Date {
   const d = new Date();
   const day = d.getDay();
@@ -178,21 +211,48 @@ export default function LeaderboardPage() {
           <>
             {/* Podium top 3 */}
             {filteredEntries.length >= 3 && (
-              <div className="flex justify-center items-end gap-4 mb-10">
-                {[filteredEntries[1], filteredEntries[0], filteredEntries[2]].map((player, i) => {
-                  const heights = ["h-20", "h-28", "h-16"];
+              <div className="flex justify-center items-end gap-3 mb-12 px-2">
+                {([1, 0, 2] as const).map((rankIdx, colIdx) => {
+                  const player = filteredEntries[rankIdx];
+                  const rank = rankIdx + 1;
                   const isMe = player.username === username;
+                  const barHeights = [96, 132, 72];
+                  const barH = barHeights[colIdx];
+                  const grad = PODIUM_GRADIENTS[colIdx];
+                  const glow = PODIUM_GLOWS[colIdx];
+                  const avatarGrad = playerGradient(player.username);
+
                   return (
-                    <div key={player.username} className="flex flex-col items-center gap-2">
-                      <span className="text-2xl">{RANK_EMOJIS[[1, 0, 2][i]]}</span>
-                      <span className={`font-bold text-sm ${isMe ? "text-purple-600 dark:text-purple-300" : "text-gray-700 dark:text-slate-300"}`}>
-                        {player.username}{isMe ? " 👤" : ""}
-                      </span>
-                      <span className="text-purple-600 dark:text-purple-400 font-semibold text-xs">
+                    <div key={player.username} className="flex flex-col items-center gap-2 flex-1 max-w-[110px]">
+                      {/* Couronne #1 */}
+                      {rank === 1 && (
+                        <span className="text-3xl avatar-badge-bounce select-none">👑</span>
+                      )}
+
+                      {/* Avatar cercle */}
+                      <div
+                        className={`w-12 h-12 rounded-full bg-gradient-to-br ${avatarGrad} flex items-center justify-center text-white font-black text-lg shadow-lg ${isMe ? "ring-2 ring-purple-400 ring-offset-2 dark:ring-offset-slate-900" : ""}`}
+                        style={{ boxShadow: glow }}
+                      >
+                        {player.username[0].toUpperCase()}
+                      </div>
+
+                      {/* Nom */}
+                      <p className={`text-xs font-bold text-center leading-tight truncate w-full ${isMe ? "text-purple-600 dark:text-purple-300" : "text-gray-700 dark:text-slate-200"}`}>
+                        {player.username}
+                      </p>
+
+                      {/* Score */}
+                      <p className="text-xs text-gray-500 dark:text-slate-400 font-semibold">
                         {player.score.toLocaleString()} pts
-                      </span>
-                      <div className={`w-16 ${heights[i]} ${RANK_COLORS[[1, 0, 2][i]]} rounded-t-xl flex items-end justify-center pb-2`}>
-                        <span className="text-xl font-black">{[2, 1, 3][i]}</span>
+                      </p>
+
+                      {/* Barre */}
+                      <div
+                        className={`w-full rounded-t-2xl bg-gradient-to-t ${grad} flex items-center justify-center shadow-lg podium-bar`}
+                        style={{ height: barH, boxShadow: glow, animationDelay: `${colIdx * 0.12}s` }}
+                      >
+                        <span className="text-2xl font-black text-white/80">{rank}</span>
                       </div>
                     </div>
                   );
@@ -205,6 +265,8 @@ export default function LeaderboardPage() {
               {filteredEntries.map((player, idx) => {
                 const rank = idx + 1;
                 const isMe = player.username === username;
+                const avatarGrad = playerGradient(player.username);
+                const levelEmoji = LEVEL_FROM_SCORE(player.score);
                 return (
                   <div
                     key={player.username}
@@ -215,13 +277,14 @@ export default function LeaderboardPage() {
                     <span className="w-8 text-center font-bold text-gray-400 dark:text-slate-500 text-sm">
                       {rank <= 3 ? RANK_EMOJIS[rank - 1] : `#${rank}`}
                     </span>
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm ${isMe ? "bg-gradient-to-br from-purple-500 to-pink-500" : "bg-gradient-to-br from-purple-400 to-pink-400"}`}>
+                    <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarGrad} flex items-center justify-center text-white font-bold text-sm ${isMe ? "ring-2 ring-purple-400 ring-offset-1 dark:ring-offset-slate-800" : ""}`}>
                       {player.username[0].toUpperCase()}
                     </div>
                     <div className="flex-1">
                       <div className={`font-semibold text-sm ${isMe ? "text-purple-700 dark:text-purple-300" : "text-gray-800 dark:text-white"}`}>
                         {player.username}{isMe ? " 👤" : ""}
                       </div>
+                      <div className="text-xs text-gray-400 dark:text-slate-500">{levelEmoji}</div>
                     </div>
                     <div className="text-right">
                       <div className={`font-bold text-sm ${isMe ? "text-purple-600 dark:text-purple-300" : "text-purple-600 dark:text-purple-400"}`}>
