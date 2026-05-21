@@ -14,7 +14,7 @@ interface LevelCompleteProps {
 export default function LevelComplete({ levelId, totalLessons, onClose }: LevelCompleteProps) {
   const level = LEVELS.find((l) => l.id === levelId);
   const nextLevel = LEVELS.find((l) => l.id === levelId + 1);
-  const isLast = levelId >= 5;
+  const isLast = !nextLevel;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };

@@ -780,4 +780,211 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       },
     ],
   },
+  "8": {
+    id: 8,
+    emoji: "🛠️",
+    name: "Ingénieur",
+    color: "from-orange-500 to-amber-500",
+    lessons: [
+      {
+        title: "Tests unitaires",
+        description: "Un bon développeur teste son code avant de le livrer !\nOn écrit des fonctions de test qui vérifient le comportement attendu.\nunittest.TestCase fournit des méthodes : assertEqual, assertTrue, assertRaises...\nSi un test échoue, Python te dit exactement où le bug se trouve.",
+        code: 'import unittest\n\ndef diviser(a, b):\n    if b == 0:\n        raise ZeroDivisionError("Division par zéro !")\n    return a / b\n\ndef est_palindrome(mot):\n    m = mot.lower()\n    return m == m[::-1]\n\nclass TestFonctions(unittest.TestCase):\n    \n    def test_diviser_normal(self):\n        self.assertAlmostEqual(diviser(10, 4), 2.5)\n    \n    def test_diviser_zero(self):\n        with self.assertRaises(ZeroDivisionError):\n            diviser(5, 0)\n    \n    def test_palindrome_vrai(self):\n        self.assertTrue(est_palindrome("radar"))\n        self.assertTrue(est_palindrome("KAYAK"))\n    \n    def test_palindrome_faux(self):\n        self.assertFalse(est_palindrome("python"))\n\nsuite = unittest.TestLoader().loadTestsFromTestCase(TestFonctions)\nresultat = unittest.TextTestRunner(verbosity=0, stream=__import__("io").StringIO()).run(suite)\nprint(f"Tests exécutés : {resultat.testsRun}")\nprint(f"Succès : {resultat.testsRun - len(resultat.failures) - len(resultat.errors)}")\nif resultat.wasSuccessful():\n    print("✅ Tous les tests passent !")\nelse:\n    print("❌ Des tests ont échoué !")',
+        exercise: {
+          instruction: "Écris une fonction carre(n) qui retourne n².\nTestez-la avec des assertEqual :\ncarre(3) == 9, carre(0) == 0, carre(-2) == 4.\nAffiche '✅ Tests réussis' si tout est bon.",
+          starterCode: "def carre(n):\n    # Retourne n au carré\n    pass\n\n# Teste carre() ici\nassert carre(3) == 9\nassert carre(0) == 0\nassert carre(-2) == 4\nprint('✅ Tests réussis')\n",
+          expectedOutput: "✅ Tests réussis",
+          hints: [
+            "La fonction doit retourner n multiplié par lui-même.",
+            "return n * n ou return n**2 fonctionnent tous les deux.",
+            "def carre(n):\n    return n ** 2",
+          ],
+        },
+        quiz: {
+          questions: [
+            {
+              question: "À quoi sert assertEqual(a, b) dans un test ?",
+              options: ["Affiche a et b", "Vérifie que a == b et échoue sinon", "Assigne b à a", "Affiche True ou False"],
+              correct: 1,
+              explanation: "assertEqual(a, b) vérifie l'égalité. Si a != b, le test échoue avec un message d'erreur clair.",
+            },
+            {
+              question: "Comment tester qu'une fonction lève une exception ?",
+              options: ["try/except dans le test", "self.assertRaises(TypeError):", "with self.assertRaises(TypeError):", "assertEqual(error, True)"],
+              correct: 2,
+              explanation: "with self.assertRaises(MonErreur): est le moyen idiomatique de tester qu'une exception est bien levée.",
+            },
+          ],
+        },
+      },
+      {
+        title: "Fichiers et texte avec io",
+        description: "Python lit et écrit des fichiers avec open().\nEn vrai : open('fichier.txt', 'r') pour lire, 'w' pour écrire, 'a' pour ajouter.\nDans le navigateur, on utilise io.StringIO : un fichier en mémoire.\nio.StringIO() se comporte exactement comme un vrai fichier texte !\nToujours utiliser with open(...) pour fermer le fichier automatiquement.",
+        code: 'import io\n\n# io.StringIO = fichier en mémoire (même API qu\'un vrai fichier)\nfichier = io.StringIO()\nfichier.write("Alice 85\\n")\nfichier.write("Bob 72\\n")\nfichier.write("Charlie 91\\n")\nfichier.write("Diana 68\\n")\n\n# Revenir au début pour lire\nfichier.seek(0)\n\nresultats = []\nfor ligne in fichier:\n    nom, score = ligne.strip().split()\n    resultats.append((nom, int(score)))\n\n# Trier par score décroissant\nresultats.sort(key=lambda x: x[1], reverse=True)\n\nprint("🏆 CLASSEMENT")\nprint("-" * 20)\nfor rang, (nom, score) in enumerate(resultats, 1):\n    emoji = ["🥇", "🥈", "🥉"][rang-1] if rang <= 3 else f"{rang}."\n    print(f"  {emoji} {nom:<10} {score}/100")\n\nmoyenne = sum(s for _, s in resultats) / len(resultats)\nprint(f"\\nMoyenne de classe : {moyenne:.1f}")',
+        exercise: {
+          instruction: "Utilise io.StringIO pour créer un texte avec 5 lignes numérotées (Ligne 1, Ligne 2, ..., Ligne 5).\nLis-le et affiche uniquement les lignes dont le numéro est impair.",
+          starterCode: "import io\n\nbuf = io.StringIO()\n# Écris 5 lignes : 'Ligne 1', 'Ligne 2', ..., 'Ligne 5'\n\nbuf.seek(0)\n# Affiche uniquement les lignes impaires\n",
+          expectedOutput: "Ligne 1\nLigne 3\nLigne 5",
+          hints: [
+            "Écris les lignes avec buf.write(f'Ligne {i}\\n') dans une boucle.",
+            "Pour lire, parcours buf avec for ligne in buf: et utilise strip().",
+            "for i in range(1, 6):\n    buf.write(f'Ligne {i}\\n')\nbuf.seek(0)\nfor ligne in buf:\n    n = int(ligne.strip().split()[1])\n    if n % 2 == 1:\n        print(ligne.strip())",
+          ],
+        },
+      },
+      {
+        title: "Exceptions personnalisées",
+        description: "Tu peux créer tes propres exceptions en héritant de Exception !\nCela rend le code beaucoup plus lisible : ValueError vs ErreurAge, ça n'a pas le même sens.\nUne hiérarchie d'exceptions permet de les attraper avec précision.\nLes vraies applis (Django, SQLAlchemy, requests) ont toutes leurs propres exceptions.",
+        code: 'class ErreurValidation(Exception):\n    """Erreur de base pour les validations."""\n    pass\n\nclass ErreurAge(ErreurValidation):\n    def __init__(self, age, mini=0, maxi=120):\n        self.age = age\n        super().__init__(f"Âge invalide : {age} (attendu entre {mini} et {maxi})")\n\nclass ErreurNom(ErreurValidation):\n    def __init__(self, nom):\n        super().__init__(f"Nom invalide : \'{nom}\' (min 2 caractères, lettres uniquement)")\n\ndef creer_compte(nom, age):\n    if len(nom) < 2 or not nom.isalpha():\n        raise ErreurNom(nom)\n    if not 0 <= age <= 120:\n        raise ErreurAge(age)\n    return f"✅ Compte créé : {nom}, {age} ans"\n\ntests = [\n    ("Alice", 25),\n    ("X", 30),\n    ("Bob", -5),\n    ("Charlie", 200),\n    ("Emma", 17),\n]\n\nfor nom, age in tests:\n    try:\n        print(creer_compte(nom, age))\n    except ErreurNom as e:\n        print(f"❌ Nom : {e}")\n    except ErreurAge as e:\n        print(f"❌ Âge : {e}")',
+        exercise: {
+          instruction: "Crée une exception ErreurNote qui hérite de Exception.\nSi la note est < 0 ou > 20, lève ErreurNote avec le message 'Note invalide: X'.\nAffiche 'OK' pour 15, et le message d'erreur pour 25.",
+          starterCode: "class ErreurNote(Exception):\n    pass\n\ndef valider_note(n):\n    if n < 0 or n > 20:\n        raise ErreurNote(f'Note invalide: {n}')\n    return 'OK'\n\ntry:\n    print(valider_note(15))\nexcept ErreurNote as e:\n    print(e)\n\ntry:\n    print(valider_note(25))\nexcept ErreurNote as e:\n    print(e)\n",
+          expectedOutput: "OK\nNote invalide: 25",
+          hints: [
+            "La classe ErreurNote est déjà définie — tu n'as qu'à compléter valider_note.",
+            "Vérifie si n < 0 ou n > 20, et lève l'exception avec raise ErreurNote(...).",
+            "def valider_note(n):\n    if n < 0 or n > 20:\n        raise ErreurNote(f'Note invalide: {n}')\n    return 'OK'",
+          ],
+        },
+      },
+      {
+        title: "Type hints et annotations",
+        description: "Les type hints annotent les types des variables et paramètres — elles ne changent pas l'exécution mais documentent le code.\ntyping.Optional[X] = X ou None\ntyping.List[X], typing.Dict[K,V] — ou list[X], dict[K,V] depuis Python 3.9\nCallable[[int], str] = une fonction qui prend un int et retourne un str\nLes outils comme mypy utilisent ces annotations pour détecter des bugs avant l'exécution !",
+        code: 'from typing import Optional, Callable\n\ndef chercher(liste: list[int], cible: int) -> Optional[int]:\n    """Retourne l\'index ou None si absent."""\n    try:\n        return liste.index(cible)\n    except ValueError:\n        return None\n\ndef transformer(valeurs: list[int], fn: Callable[[int], int]) -> list[int]:\n    """Applique fn à chaque élément."""\n    return [fn(v) for v in valeurs]\n\ndef resumer(donnees: dict[str, list[float]]) -> dict[str, float]:\n    """Calcule la moyenne de chaque groupe."""\n    return {cle: sum(vals) / len(vals) for cle, vals in donnees.items()}\n\n# Utilisation\nnombres = [10, 20, 30, 40, 50]\nprint(f"Index de 30 : {chercher(nombres, 30)}")\nprint(f"Index de 99 : {chercher(nombres, 99)}")\n\ncubes = transformer(range(1, 6), lambda x: x ** 3)\nprint(f"Cubes : {cubes}")\n\ngroupes = {\n    "A": [14.5, 16.0, 15.5, 13.0],\n    "B": [18.0, 17.5, 19.0, 18.5],\n}\nmoyennes = resumer(groupes)\nfor grp, moy in moyennes.items():\n    print(f"Groupe {grp} : {moy:.2f}/20")',
+        exercise: {
+          instruction: "Écris une fonction annotée filtre(liste: list[int], mini: int, maxi: int) -> list[int]\nqui retourne les éléments entre mini et maxi inclus.\nAffiche filtre([1,5,3,8,2,9,4], 3, 7).",
+          starterCode: "from typing import Optional\n\ndef filtre(liste: list[int], mini: int, maxi: int) -> list[int]:\n    # Retourne les éléments entre mini et maxi inclus\n    pass\n\nprint(filtre([1, 5, 3, 8, 2, 9, 4], 3, 7))\n",
+          expectedOutput: "[5, 3, 4]",
+          hints: [
+            "Utilise une compréhension de liste avec une condition.",
+            "Filtre les éléments où mini <= x <= maxi.",
+            "return [x for x in liste if mini <= x <= maxi]",
+          ],
+        },
+      },
+      {
+        title: "Gestionnaires de contexte",
+        description: "with est un gestionnaire de contexte : il exécute du code avant et après un bloc, même si une erreur survient !\nTu as déjà utilisé : with open('fichier') as f:\nTu peux créer les tiens avec @contextmanager et yield.\nC'est parfait pour gérer des ressources : connexions, mesure du temps, transactions.",
+        code: 'from contextlib import contextmanager\nimport time\n\n@contextmanager\ndef chronometre(label: str):\n    debut = time.perf_counter()\n    try:\n        yield  # ← Exécute le bloc with\n    finally:\n        duree = time.perf_counter() - debut\n        print(f"⏱️ {label} : {duree*1000:.2f} ms")\n\n@contextmanager\ndef section(titre: str):\n    print(f"\\n┌── {titre}")\n    yield\n    print(f"└── Fin de {titre}")\n\nwith section("Calcul intensif"):\n    with chronometre("Somme 1-1M"):\n        total = sum(range(1_000_000))\n    print(f"│  Résultat : {total:,}")\n\nwith section("Traitement texte"):\n    with chronometre("Mots uniques"):\n        texte = "le chat mange le poisson le chat dort"\n        uniques = set(texte.split())\n    print(f"│  {len(uniques)} mots uniques : {sorted(uniques)}")',
+        exercise: {
+          instruction: "Écris un gestionnaire de contexte compteur() qui print 'Début' avant le bloc et 'Fin' après.\nUtilise-le avec une instruction with et affiche 'En cours...' dans le bloc.",
+          starterCode: "from contextlib import contextmanager\n\n@contextmanager\ndef compteur():\n    print('Début')\n    yield\n    print('Fin')\n\nwith compteur():\n    print('En cours...')\n",
+          expectedOutput: "Début\nEn cours...\nFin",
+          hints: [
+            "Le code avant yield s'exécute en entrant dans le with, le code après en sortant.",
+            "Le gestionnaire est déjà quasi-complet — exécute-le !",
+            "Le code fourni est la solution. Clique ▶ pour voir le résultat.",
+          ],
+        },
+      },
+      {
+        title: "Mini-projet : Carnet de notes",
+        description: "On assemble tout ce qu'on a appris dans ce niveau : exceptions personnalisées, type hints, gestionnaires de contexte et io.\nLe CarnetNotes valide les entrées, gère les erreurs proprement et exporte un rapport.\nC'est exactement le style de code qu'on écrit en entreprise !",
+        code: 'from contextlib import contextmanager\nfrom dataclasses import dataclass, field\nimport io\n\nclass ErreurNote(Exception): pass\nclass ErreurEleve(Exception): pass\n\n@dataclass\nclass Eleve:\n    nom: str\n    notes: list = field(default_factory=list)\n    \n    @property\n    def moyenne(self):\n        return sum(self.notes) / len(self.notes) if self.notes else 0.0\n    \n    @property\n    def mention(self):\n        m = self.moyenne\n        if m >= 16: return "Tres bien"\n        if m >= 14: return "Bien"\n        if m >= 12: return "Assez bien"\n        if m >= 10: return "Passable"\n        return "Insuffisant"\n\nclass CarnetNotes:\n    def __init__(self):\n        self.eleves = {}\n    \n    def ajouter_eleve(self, nom):\n        if len(nom) < 2:\n            raise ErreurEleve("Nom trop court")\n        self.eleves[nom] = Eleve(nom)\n    \n    def ajouter_note(self, nom, note):\n        if nom not in self.eleves:\n            raise ErreurEleve(f"{nom} inconnu")\n        if not 0 <= note <= 20:\n            raise ErreurNote(f"Note invalide : {note}")\n        self.eleves[nom].notes.append(note)\n    \n    @contextmanager\n    def rapport(self, titre):\n        buf = io.StringIO()\n        sep = "=" * 38\n        buf.write(f"{sep}\\n{titre}\\n{sep}\\n")\n        yield buf\n        buf.seek(0)\n        print(buf.read())\n\ncarnet = CarnetNotes()\nfor n in ["Alice", "Bob", "Charlie"]:\n    carnet.ajouter_eleve(n)\n\ndonnees = [\n    ("Alice",   [15, 17, 14, 16]),\n    ("Bob",     [11, 9,  13, 10]),\n    ("Charlie", [18, 19, 17, 20]),\n]\nfor nom, notes in donnees:\n    for note in notes:\n        carnet.ajouter_note(nom, note)\n\nwith carnet.rapport("Bulletin de fin de semestre") as buf:\n    for eleve in sorted(carnet.eleves.values(), key=lambda e: e.moyenne, reverse=True):\n        buf.write(f"{eleve.nom:<12} {eleve.moyenne:.2f}/20  ->  {eleve.mention}\\n")',
+      },
+    ],
+  },
+  "9": {
+    id: 9,
+    emoji: "🌟",
+    name: "Pionnier",
+    color: "from-rose-500 to-pink-600",
+    lessons: [
+      {
+        title: "Design Pattern : Factory",
+        description: "Le pattern Factory délègue la création d'objets à une fonction ou classe spéciale.\nAu lieu de 'new Truc()' partout, tu appelles 'factory.creer(\"truc\")'.\nAvantage : le code qui utilise les objets n'a pas besoin de savoir comment ils sont construits.\nC'est utilisé partout : ORM Django, parsers, plugins, UI frameworks.",
+        code: 'from abc import ABC, abstractmethod\n\nclass Forme(ABC):\n    @abstractmethod\n    def aire(self) -> float: ...\n    @abstractmethod\n    def description(self) -> str: ...\n\nclass Cercle(Forme):\n    def __init__(self, rayon: float):\n        self.rayon = rayon\n    def aire(self) -> float:\n        return 3.14159 * self.rayon ** 2\n    def description(self) -> str:\n        return f"Cercle (r={self.rayon}) — aire={self.aire():.2f}"\n\nclass Rectangle(Forme):\n    def __init__(self, largeur: float, hauteur: float):\n        self.largeur, self.hauteur = largeur, hauteur\n    def aire(self) -> float:\n        return self.largeur * self.hauteur\n    def description(self) -> str:\n        return f"Rectangle ({self.largeur}×{self.hauteur}) — aire={self.aire():.2f}"\n\nclass Triangle(Forme):\n    def __init__(self, base: float, hauteur: float):\n        self.base, self.hauteur = base, hauteur\n    def aire(self) -> float:\n        return 0.5 * self.base * self.hauteur\n    def description(self) -> str:\n        return f"Triangle (b={self.base}, h={self.hauteur}) — aire={self.aire():.2f}"\n\nclass FormeFactory:\n    _types = {\n        "cercle":    lambda **kw: Cercle(kw["rayon"]),\n        "rectangle": lambda **kw: Rectangle(kw["largeur"], kw["hauteur"]),\n        "triangle":  lambda **kw: Triangle(kw["base"], kw["hauteur"]),\n    }\n    \n    @classmethod\n    def creer(cls, type_forme: str, **kwargs) -> Forme:\n        if type_forme not in cls._types:\n            raise ValueError(f"Forme inconnue : {type_forme}")\n        return cls._types[type_forme](**kwargs)\n\nformes = [\n    FormeFactory.creer("cercle",    rayon=5),\n    FormeFactory.creer("rectangle", largeur=4, hauteur=6),\n    FormeFactory.creer("triangle",  base=3,    hauteur=8),\n]\n\nfor f in formes:\n    print(f.description())\n\ntotal = sum(f.aire() for f in formes)\nprint(f"\\nAire totale : {total:.2f}")',
+        exercise: {
+          instruction: "Crée une AnimalFactory avec 'chat' → print 'Miaou !' et 'chien' → print 'Ouaf !'.\nAppelle factory.creer('chat').parler() et factory.creer('chien').parler().",
+          starterCode: "class Animal:\n    def parler(self): pass\n\nclass Chat(Animal):\n    def parler(self):\n        print('Miaou !')\n\nclass Chien(Animal):\n    def parler(self):\n        print('Ouaf !')\n\nclass AnimalFactory:\n    _types = {'chat': Chat, 'chien': Chien}\n    \n    @classmethod\n    def creer(cls, type_animal: str) -> Animal:\n        # Retourne une instance du bon type\n        pass\n\nAnimalFactory.creer('chat').parler()\nAnimalFactory.creer('chien').parler()\n",
+          expectedOutput: "Miaou !\nOuaf !",
+          hints: [
+            "La factory doit récupérer la classe dans _types et l'instancier.",
+            "Retourne cls._types[type_animal]() pour créer l'instance.",
+            "return cls._types[type_animal]()",
+          ],
+        },
+        quiz: {
+          questions: [
+            {
+              question: "Quel est l'avantage principal du pattern Factory ?",
+              options: [
+                "Le code est plus court",
+                "La création d'objets est centralisée et le code appelant ne dépend pas des classes concrètes",
+                "Les objets sont plus rapides",
+                "Il n'y a plus besoin d'héritage",
+              ],
+              correct: 1,
+              explanation: "La Factory découple la création de l'utilisation. Tu peux changer les classes concrètes sans toucher au code qui les utilise.",
+            },
+          ],
+        },
+      },
+      {
+        title: "Design Pattern : Observer",
+        description: "Le pattern Observer permet à des objets de s'abonner à des événements d'un autre objet.\nL'objet observé (sujet) notifie tous ses abonnés quand son état change.\nC'est le fondement des interfaces graphiques, des frameworks réactifs (React, Vue), des jeux...\nExemple : un bouton (sujet) notifie les listeners quand on clique dessus.",
+        code: 'from typing import Callable\n\nclass Evenement:\n    """Système d\'événements simple : on s\'abonne avec += et on lève avec ()."""\n    \n    def __init__(self):\n        self._handlers: list[Callable] = []\n    \n    def __iadd__(self, handler: Callable):\n        self._handlers.append(handler)\n        return self\n    \n    def __isub__(self, handler: Callable):\n        self._handlers.remove(handler)\n        return self\n    \n    def __call__(self, *args, **kwargs):\n        for h in self._handlers:\n            h(*args, **kwargs)\n\nclass CompteBancaire:\n    def __init__(self, proprietaire: str, solde: float = 0):\n        self.proprietaire = proprietaire\n        self._solde = solde\n        self.on_depot    = Evenement()\n        self.on_retrait  = Evenement()\n        self.on_alerte   = Evenement()\n    \n    def deposer(self, montant: float):\n        self._solde += montant\n        self.on_depot(montant, self._solde)\n        if self._solde > 1000:\n            self.on_alerte(f"Solde élevé : {self._solde:.2f}€")\n    \n    def retirer(self, montant: float):\n        if montant > self._solde:\n            self.on_alerte(f"Solde insuffisant : {self._solde:.2f}€ < {montant:.2f}€")\n            return\n        self._solde -= montant\n        self.on_retrait(montant, self._solde)\n\ncompte = CompteBancaire("Alice", 500)\n\ncompte.on_depot   += lambda m, s: print(f"📥 Dépôt +{m}€ → Solde : {s:.2f}€")\ncompte.on_retrait += lambda m, s: print(f"📤 Retrait -{m}€ → Solde : {s:.2f}€")\ncompte.on_alerte  += lambda msg: print(f"⚠️  {msg}")\n\ncompte.deposer(600)\ncompte.retirer(200)\ncompte.retirer(1000)\ncompte.deposer(50)',
+        exercise: {
+          instruction: "Crée un Minuteur avec un événement on_tique.\nChaque fois que tick() est appelé, il lève on_tique(n) où n est le numéro du tick.\nAppelle tick() 3 fois et abonne-toi pour afficher 'Tick 1', 'Tick 2', 'Tick 3'.",
+          starterCode: "class Evenement:\n    def __init__(self):\n        self._handlers = []\n    def __iadd__(self, h):\n        self._handlers.append(h)\n        return self\n    def __call__(self, *a):\n        for h in self._handlers: h(*a)\n\nclass Minuteur:\n    def __init__(self):\n        self.on_tique = Evenement()\n        self._n = 0\n    \n    def tick(self):\n        self._n += 1\n        self.on_tique(self._n)\n\nm = Minuteur()\nm.on_tique += lambda n: print(f'Tick {n}')\nm.tick()\nm.tick()\nm.tick()\n",
+          expectedOutput: "Tick 1\nTick 2\nTick 3",
+          hints: [
+            "Le code est presque complet — tu dois juste appeler self.on_tique(self._n) dans tick().",
+            "Incrémenter self._n puis lever l'événement : self.on_tique(self._n).",
+            "Le code fourni est la solution. Clique ▶ pour l'exécuter.",
+          ],
+        },
+      },
+      {
+        title: "Programmation fonctionnelle avancée",
+        description: "La programmation fonctionnelle traite les fonctions comme des valeurs comme les autres.\nCompose : f(g(x)) — appliquer plusieurs fonctions en chaîne\nCurrying : transformer f(a, b) en f(a)(b)\nMonad-like : chaîner des opérations sans effets de bord\nPython n'est pas pur FP, mais ses outils fonctionnels (map, filter, functools) sont très puissants.",
+        code: 'from functools import reduce, partial\nfrom typing import Callable\n\n# Composition : applique des fonctions de droite à gauche\ndef compose(*fns: Callable) -> Callable:\n    return reduce(lambda f, g: lambda x: f(g(x)), fns)\n\n# Pipeline : applique des fonctions de gauche à droite\ndef pipeline(*fns: Callable) -> Callable:\n    return reduce(lambda f, g: lambda x: g(f(x)), fns)\n\n# Fonctions de transformation de texte\nnettoyer   = str.strip\nmajuscule  = str.upper\najouter_pt = lambda s: s + "."\nremplacer  = lambda s: s.replace(" ", "_")\n\n# Composons-les\nformater = pipeline(nettoyer, majuscule, remplacer, ajouter_pt)\n\nphrase = "  bonjour le monde  "\nprint(formater(phrase))\n\n# Currying avec partial\ndef multiplier(a: int, b: int) -> int:\n    return a * b\n\ndoubler = partial(multiplier, 2)\ntripler = partial(multiplier, 3)\n\nprint(list(map(doubler, range(1, 6))))\nprint(list(map(tripler, range(1, 6))))\n\n# Reduce pour créer un mini-pipeline de données\nnombres = range(1, 11)\nresultat = reduce(\n    lambda acc, fn: fn(acc),\n    [\n        list,\n        lambda lst: filter(lambda x: x % 2 == 0, lst),\n        list,\n        lambda lst: map(lambda x: x ** 2, lst),\n        list,\n    ],\n    nombres\n)\nprint(f"Carrés des pairs 1-10 : {resultat}")',
+        exercise: {
+          instruction: "Utilise compose pour créer une fonction qui :\n1. Multiplie par 2\n2. Ajoute 10\nApplique-la à [1, 2, 3, 4, 5] avec map et affiche la liste.",
+          starterCode: "from functools import reduce\n\ndef compose(*fns):\n    return reduce(lambda f, g: lambda x: f(g(x)), fns)\n\n# Crée les deux fonctions puis compose-les\ntimes2 = lambda x: x * 2\nplus10 = lambda x: x + 10\n\ntraiter = compose(plus10, times2)  # d'abord times2, puis plus10\n\nprint(list(map(traiter, [1, 2, 3, 4, 5])))\n",
+          expectedOutput: "[12, 14, 16, 18, 20]",
+          hints: [
+            "compose(f, g)(x) = f(g(x)) — g s'applique en premier.",
+            "compose(plus10, times2) fait d'abord ×2 puis +10.",
+            "Le code fourni est la solution — clique ▶ pour vérifier !",
+          ],
+        },
+      },
+      {
+        title: "Classes abstraites (ABC)",
+        description: "Une classe abstraite définit une interface que toutes les classes filles DOIVENT implémenter.\n@abstractmethod rend une méthode obligatoire — impossible d'instancier la classe sans l'implémenter.\nABC (Abstract Base Class) garantit que toutes les implémentations respectent le contrat.\nC'est la base des plugins, des drivers, des stratégies interchangeables.",
+        code: 'from abc import ABC, abstractmethod\nfrom typing import Iterator\n\nclass SourceDonnees(ABC):\n    """Interface abstraite pour toute source de données."""\n    \n    @abstractmethod\n    def lire(self) -> Iterator[str]: ...\n    \n    @abstractmethod\n    def compter(self) -> int: ...\n    \n    def afficher_resume(self) -> None:\n        lignes = list(self.lire())\n        print(f"Source : {self.__class__.__name__}")\n        print(f"Lignes : {self.compter()}")\n        print(f"Aperçu : {lignes[:2]}...")\n\nclass SourceTexte(SourceDonnees):\n    def __init__(self, texte: str):\n        self._lignes = texte.strip().split("\\n")\n    \n    def lire(self) -> Iterator[str]:\n        return iter(self._lignes)\n    \n    def compter(self) -> int:\n        return len(self._lignes)\n\nclass SourceRepetition(SourceDonnees):\n    def __init__(self, valeur: str, fois: int):\n        self._valeur = valeur\n        self._fois   = fois\n    \n    def lire(self) -> Iterator[str]:\n        return iter([self._valeur] * self._fois)\n    \n    def compter(self) -> int:\n        return self._fois\n\ndef analyser(source: SourceDonnees) -> None:\n    source.afficher_resume()\n    mots_total = sum(len(l.split()) for l in source.lire())\n    print(f"Mots total : {mots_total}\\n")\n\nsources = [\n    SourceTexte("Python est super\\nJ\'adore coder\\nLes classes abstraites aussi"),\n    SourceRepetition("Bonjour le monde", 4),\n]\n\nfor src in sources:\n    analyser(src)',
+        exercise: {
+          instruction: "Implémente une classe concrète SourceListe(ABC) qui prend une list[str].\nImplemente lire() et compter().\nAffiche compter() d'une SourceListe(['a', 'b', 'c']).",
+          starterCode: "from abc import ABC, abstractmethod\n\nclass SourceDonnees(ABC):\n    @abstractmethod\n    def lire(self): ...\n    @abstractmethod\n    def compter(self) -> int: ...\n\nclass SourceListe(SourceDonnees):\n    def __init__(self, donnees: list):\n        self._donnees = donnees\n    \n    def lire(self):\n        return iter(self._donnees)\n    \n    def compter(self) -> int:\n        return len(self._donnees)\n\nsrc = SourceListe(['a', 'b', 'c'])\nprint(src.compter())\n",
+          expectedOutput: "3",
+          hints: [
+            "SourceListe hérite de SourceDonnees et doit implémenter lire() et compter().",
+            "lire() retourne iter(self._donnees), compter() retourne len(self._donnees).",
+            "Le code fourni est la solution — clique ▶ pour vérifier.",
+          ],
+        },
+      },
+      {
+        title: "Métaclasses",
+        description: "En Python, TOUT est un objet — y compris les classes elles-mêmes !\nUne métaclasse est la classe d'une classe — elle contrôle la création de classes.\ntype est la métaclasse par défaut de toutes les classes Python.\nAvec __new__ dans une métaclasse, tu peux modifier une classe au moment où elle est définie.\nUtilisé par Django (models), SQLAlchemy, attrs, Pydantic, enums...",
+        code: '# Métaclasse simple : ajoute automatiquement un attribut de classe\nclass AutoDoc(type):\n    def __new__(mcs, nom, bases, namespace):\n        cls = super().__new__(mcs, nom, bases, namespace)\n        # Ajoute automatiquement une description si absente\n        if not hasattr(cls, "description"):\n            cls.description = f"Classe {nom} sans documentation"\n        # Liste les méthodes publiques\n        cls.methodes_publiques = [\n            k for k in namespace\n            if callable(namespace[k]) and not k.startswith("_")\n        ]\n        return cls\n\nclass Vehicule(metaclass=AutoDoc):\n    description = "Tout ce qui roule"\n    \n    def demarrer(self): return "Vroooom"\n    def arreter(self):  return "Scrreech"\n\nclass Outil(metaclass=AutoDoc):\n    def couper(self): return "Schnik"\n    def percer(self): return "Zzzz"\n\nprint(f"Vehicule : {Vehicule.description}")\nprint(f"Méthodes : {Vehicule.methodes_publiques}")\nprint()\nprint(f"Outil : {Outil.description}")\nprint(f"Méthodes : {Outil.methodes_publiques}")\nprint()\n\n# Singleton avec métaclasse\nclass Singleton(type):\n    _instances: dict = {}\n    def __call__(cls, *args, **kwargs):\n        if cls not in cls._instances:\n            cls._instances[cls] = super().__call__(*args, **kwargs)\n        return cls._instances[cls]\n\nclass Config(metaclass=Singleton):\n    def __init__(self):\n        self.debug = False\n        self.version = "1.0"\n\nc1 = Config()\nc2 = Config()\nprint(f"c1 is c2 : {c1 is c2}")  # True !',
+        exercise: {
+          instruction: "Crée une métaclasse CompteurClasses qui incrémente une variable nb_classes chaque fois qu'une classe est créée.\nCrée 2 classes avec cette métaclasse et affiche CompteurClasses.nb_classes.",
+          starterCode: "class CompteurClasses(type):\n    nb_classes = 0\n    def __new__(mcs, nom, bases, namespace):\n        cls = super().__new__(mcs, nom, bases, namespace)\n        CompteurClasses.nb_classes += 1\n        return cls\n\nclass Foo(metaclass=CompteurClasses): pass\nclass Bar(metaclass=CompteurClasses): pass\n\nprint(CompteurClasses.nb_classes)\n",
+          expectedOutput: "2",
+          hints: [
+            "Dans __new__, incrémente CompteurClasses.nb_classes avant de retourner la classe.",
+            "N'oublie pas d'appeler super().__new__(mcs, nom, bases, namespace).",
+            "Le code fourni est la solution — clique ▶ pour vérifier.",
+          ],
+        },
+      },
+      {
+        title: "Mini-projet : Framework de règles",
+        description: "On combine tout ce qu'on a appris : ABC, Factory, Observer, décorateurs et fonctionnel.\nOn crée un moteur de règles métier — le genre de système utilisé dans les banques, assurances, et jeux.\nChaque règle est une classe abstraite, la factory les instancie, et l'observer notifie les violations.\nC'est du vrai code d'entreprise !",
+        code: 'from abc import ABC, abstractmethod\nfrom typing import Callable\nfrom functools import reduce\n\n# ── Règles abstraites ─────────────────────────────────────────────────\nclass Regle(ABC):\n    def __init__(self, message: str):\n        self.message = message\n    \n    @abstractmethod\n    def verifier(self, valeur) -> bool: ...\n    \n    def __call__(self, valeur) -> tuple[bool, str]:\n        ok = self.verifier(valeur)\n        return ok, ("" if ok else self.message)\n\nclass RegleMin(Regle):\n    def __init__(self, mini):\n        super().__init__(f"Valeur trop petite (min={mini})")\n        self.mini = mini\n    def verifier(self, v) -> bool: return v >= self.mini\n\nclass RegleMax(Regle):\n    def __init__(self, maxi):\n        super().__init__(f"Valeur trop grande (max={maxi})")\n        self.maxi = maxi\n    def verifier(self, v) -> bool: return v <= self.maxi\n\nclass ReglePair(Regle):\n    def __init__(self):\n        super().__init__("La valeur doit être paire")\n    def verifier(self, v) -> bool: return v % 2 == 0\n\n# ── Moteur de règles ──────────────────────────────────────────────────\nclass MoteurRegles:\n    def __init__(self):\n        self.regles: list[Regle] = []\n        self._violations: list[Callable] = []\n    \n    def ajouter(self, *regles: Regle):\n        self.regles.extend(regles)\n        return self\n    \n    def on_violation(self, handler: Callable):\n        self._violations.append(handler)\n        return self\n    \n    def valider(self, valeur) -> bool:\n        erreurs = [msg for ok, msg in (r(valeur) for r in self.regles) if not ok]\n        for erreur in erreurs:\n            for h in self._violations: h(valeur, erreur)\n        return len(erreurs) == 0\n\n# ── Utilisation ───────────────────────────────────────────────────────\nmoteur = MoteurRegles()\nmoteur.ajouter(\n    RegleMin(0),\n    RegleMax(100),\n    ReglePair(),\n)\nmoteur.on_violation(lambda v, msg: print(f"  ❌ {v} → {msg}"))\n\nvaleurs = [50, -5, 101, 7, 84, 200]\nprint("Validation des valeurs :")\nfor v in valeurs:\n    ok = moteur.valider(v)\n    if ok:\n        print(f"  ✅ {v} → valide")',
+      },
+    ],
+  },
 };
