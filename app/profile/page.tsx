@@ -20,8 +20,8 @@ import {
 } from "@/lib/chests";
 import { getGems } from "@/lib/gems";
 import {
-  getOwnedShopItems, getEquippedSkin, getEquippedStickers,
-  SHOP_SKINS, SHOP_STICKERS,
+  getOwnedShopItems, getEquippedSkin, getEquippedStickers, getEquippedTitle,
+  SHOP_SKINS, SHOP_STICKERS, SHOP_TITLES,
 } from "@/lib/shop";
 import ChestOpener from "@/components/ChestOpener";
 import DailySeries from "@/components/DailySeries";
@@ -54,6 +54,7 @@ export default function ProfilePage() {
   const [gems, setGems] = useState(0);
   const [equippedSkin, setEquippedSkin] = useState<string | null>(null);
   const [equippedStickers, setEquippedStickers] = useState<string[]>([]);
+  const [equippedTitle, setEquippedTitle] = useState<string | null>(null);
   const [ownedShopItems, setOwnedShopItems] = useState<string[]>([]);
   const [unlockedHeads, setUnlockedHeads] = useState<string[]>([]);
   const [equippedHeadId, setEquippedHeadId] = useState<string | null>(null);
@@ -106,6 +107,8 @@ export default function ProfilePage() {
       setEquippedSkin(getEquippedSkin());
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setEquippedStickers(getEquippedStickers());
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEquippedTitle(getEquippedTitle());
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setOwnedShopItems(getOwnedShopItems());
     };
@@ -254,6 +257,16 @@ export default function ProfilePage() {
                   <span className={rank.color}>{rank.title}</span>
                 </div>
               );
+            })()}
+
+            {/* Titre équipé */}
+            {mounted && equippedTitle && (() => {
+              const t = SHOP_TITLES.find((t) => t.id === equippedTitle);
+              return t ? (
+                <span className={`mt-1.5 px-3 py-1 rounded-full text-xs font-extrabold text-white bg-gradient-to-r ${t.gradient}`}>
+                  {t.emoji} {t.tagText}
+                </span>
+              ) : null;
             })()}
 
             {/* Stickers */}

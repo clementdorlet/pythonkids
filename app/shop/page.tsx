@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import AppHeader from "@/components/AppHeader";
 import {
-  SHOP_SKINS, SHOP_STICKERS, getOwnedShopItems, getEquippedSkin,
-  getEquippedStickers, purchaseItem, equipSkin, toggleSticker, grantItem,
+  SHOP_SKINS, SHOP_STICKERS, SHOP_TITLES, getOwnedShopItems, getEquippedSkin,
+  getEquippedStickers, getEquippedTitle, purchaseItem, equipSkin, toggleSticker, toggleTitle, grantItem,
   RARITY_COLORS_SHOP, RARITY_LABELS_SHOP, RARITY_BORDER_SHOP,
   type ShopItem,
 } from "@/lib/shop";
@@ -18,7 +18,7 @@ import {
 } from "@/lib/themes";
 import { spendGems } from "@/lib/gems";
 
-type Tab = "skins" | "stickers" | "consumables" | "themes" | "gems";
+type Tab = "skins" | "stickers" | "titles" | "consumables" | "themes" | "gems";
 
 const GEM_PACKS = [
   { id: "gems_100",  label: "Sachet",  amount: 100,  price: "1,99 €",  bonus: null,    color: "from-sky-400 to-cyan-500",     emoji: "💎" },
@@ -62,6 +62,12 @@ function ItemCard({
       {item.type === "skin" ? (
         <div className={`w-full h-16 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-3xl shadow-sm`}>
           {item.emoji}
+        </div>
+      ) : item.type === "title" ? (
+        <div className="w-full h-16 flex items-center justify-center">
+          <span className={`px-3 py-1.5 rounded-full text-sm font-extrabold text-white bg-gradient-to-r ${item.gradient} shadow-sm`}>
+            {item.emoji} {item.tagText}
+          </span>
         </div>
       ) : (
         <div className="w-full h-16 flex items-center justify-center text-5xl">
@@ -115,6 +121,7 @@ export default function ShopPage() {
   const [owned, setOwned] = useState<string[]>([]);
   const [equippedSkin, setEquippedSkinState] = useState<string | null>(null);
   const [equippedStickers, setEquippedStickersState] = useState<string[]>([]);
+  const [equippedTitle, setEquippedTitleState] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [freezeCount, setFreezeCount] = useState(0);
   const [freezeBought, setFreezeBought] = useState(false);
@@ -130,6 +137,7 @@ export default function ShopPage() {
     setOwned(getOwnedShopItems());
     setEquippedSkinState(getEquippedSkin());
     setEquippedStickersState(getEquippedStickers());
+    setEquippedTitleState(getEquippedTitle());
     setFreezeCount(getStreakFreezeCount());
     setOwnedThemes(getOwnedThemes());
     setActiveTheme(getActiveThemeId());
@@ -155,10 +163,12 @@ export default function ShopPage() {
   };
 
   const handleEquip = (id: string) => {
-    const item = [...SHOP_SKINS, ...SHOP_STICKERS].find((i) => i.id === id);
+    const item = [...SHOP_SKINS, ...SHOP_STICKERS, ...SHOP_TITLES].find((i) => i.id === id);
     if (!item) return;
     if (item.type === "skin") {
       equipSkin(equippedSkin === id ? null : id);
+    } else if (item.type === "title") {
+      toggleTitle(id);
     } else {
       toggleSticker(id);
     }
@@ -198,7 +208,7 @@ export default function ShopPage() {
     }
   };
 
-  const items = (tab === "skins" ? SHOP_SKINS : SHOP_STICKERS).filter((i) => !i.secret || (mounted && owned.includes(i.id)));
+  const items = (tab === "skins" ? SHOP_SKINS : tab === "stickers" ? SHOP_STICKERS : SHOP_TITLES).filter((i) => !i.secret || (mounted && owned.includes(i.id)));
 
   return (
     <div className="min-h-screen">
@@ -223,6 +233,7 @@ export default function ShopPage() {
           {([
             { key: "skins", label: "🎨 Skins" },
             { key: "stickers", label: "🏷️ Stickers" },
+            { key: "titles", label: "🏅 Titres" },
             { key: "consumables", label: "⚡ Consommables" },
             { key: "themes", label: "🎨 Thèmes" },
             { key: "gems", label: "💎 Recharger" },
@@ -246,11 +257,13 @@ export default function ShopPage() {
           <p className="text-xs text-gray-400 dark:text-slate-500 mb-4">
             {tab === "skins"
               ? "Les skins changent la couleur de fond de ton avatar. Tu peux en équiper un seul à la fois."
+              : tab === "titles"
+              ? "Les titres s'affichent sous ton pseudo sur ton profil. Tu peux en équiper un seul à la fois."
               : "Les stickers s'affichent sur ton profil. Tu peux en équiper jusqu'à 3 en même temps."}
           </p>
         )}
 
-        {/* Grid skins / stickers */}
+        {/* Grid skins / stickers / titres */}
         {tab !== "consumables" && tab !== "themes" && tab !== "gems" && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {items.map((item) => (
@@ -262,6 +275,8 @@ export default function ShopPage() {
                   mounted &&
                   (item.type === "skin"
                     ? equippedSkin === item.id
+                    : item.type === "title"
+                    ? equippedTitle === item.id
                     : equippedStickers.includes(item.id))
                 }
                 gems={mounted ? gems : 0}
