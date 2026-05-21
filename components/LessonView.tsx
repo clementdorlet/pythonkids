@@ -27,6 +27,7 @@ import Confetti from "./Confetti";
 import BadgeCelebration from "./BadgeCelebration";
 import LessonQuiz from "./LessonQuiz";
 import LevelComplete from "./LevelComplete";
+import LessonConceptCards from "./LessonConceptCards";
 
 import type { Lesson } from "@/lib/lessons";
 
@@ -194,6 +195,11 @@ export default function LessonView({
           {lesson.description}
         </p>
       </div>
+
+      {/* Cartes de théorie */}
+      {lesson.concepts && lesson.concepts.length > 0 && (
+        <LessonConceptCards concepts={lesson.concepts} levelColor={levelColor} />
+      )}
 
       {/* Éditeur */}
       <PythonEditor

@@ -16,9 +16,19 @@ export interface LessonQuiz {
   questions: QuizQuestion[];
 }
 
+export interface LessonConcept {
+  emoji: string;
+  title: string;
+  explain: string;
+  analogy?: string;
+  points?: string[];
+  tip?: string;
+}
+
 export interface Lesson {
   title: string;
   description: string;
+  concepts?: LessonConcept[];
   code: string;
   exercise?: LessonExercise;
   quiz?: LessonQuiz;
@@ -42,6 +52,31 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Dis bonjour à l'ordinateur !",
         description: "L'ordinateur fait tout ce que tu lui dis !\nIl suffit de lui écrire des instructions en Python.\nTon premier ordre : lui dire d'afficher un message.\n🟢 Clique sur ▶ Exécuter pour voir la magie !",
+        concepts: [
+          {
+            emoji: "🖥️",
+            title: "C'est quoi Python ?",
+            explain: "Python est un langage de programmation — une façon d'écrire des instructions que l'ordinateur comprend et exécute. Tu vas lui donner des ordres, et il les suivra exactement !",
+            analogy: "C'est comme parler à un robot ultra-obéissant. Si tu lui dis 'dis bonjour', il dit bonjour. Si tu fais une faute, il ne comprend pas. Il faut écrire les instructions exactement comme il les attend.",
+            points: [
+              "Un programme = une suite d'instructions que l'ordinateur lit de haut en bas.",
+              "Python est l'un des langages les plus simples et les plus utilisés au monde.",
+              "Les lignes qui commencent par `#` sont des commentaires — l'ordinateur les ignore, elles sont juste pour toi !",
+            ],
+          },
+          {
+            emoji: "📢",
+            title: "La fonction print()",
+            explain: "print() est ton premier outil Python. Elle sert à afficher du texte à l'écran. C'est la commande la plus utilisée pour commencer !",
+            analogy: "print() = un haut-parleur. Tout ce que tu mets dedans, l'ordinateur le crie à l'écran.",
+            points: [
+              "Syntaxe : `print(\"ton texte ici\")`",
+              "Le texte doit être entre guillemets `\"` ou `'`.",
+              "Chaque `print()` affiche une nouvelle ligne.",
+            ],
+            tip: "Tu peux mettre des emojis dans ton texte ! print(\"Bonjour 🎉\") fonctionne parfaitement.",
+          },
+        ],
         code: '# Le dièse # sert à écrire une note pour toi.\n# L\'ordinateur ne lit pas ces lignes.\n\n# Ton premier programme !\nprint("Bonjour le monde ! 🌍")\nprint("Je suis en train de coder ! 🎉")',
         exercise: {
           instruction: "À toi ! Écris un programme qui affiche exactement :\nJe code avec Python ! 🐍",
@@ -73,6 +108,30 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Fais parler les animaux !",
         description: "print() est le mot magique de Python !\nTu écris print( ) et entre les ( ) tu mets ton texte entre \" \".\nChaque print() affiche une nouvelle ligne.\n✏️ Change le texte et clique sur ▶ pour voir !",
+        concepts: [
+          {
+            emoji: "🔡",
+            title: "Les guillemets autour du texte",
+            explain: "En Python, quand tu veux écrire du texte, tu dois le mettre entre guillemets. Ça indique à Python que c'est du texte et pas une instruction.",
+            points: [
+              "Guillemets doubles : `print(\"Bonjour\")` ✅",
+              "Guillemets simples : `print('Bonjour')` ✅ (les deux marchent !)",
+              "Sans guillemets : `print(Bonjour)` ❌ — Python croit que c'est une variable !",
+            ],
+            tip: "Si ton texte contient une apostrophe (ex: j'ai), utilise les guillemets doubles : print(\"j'ai faim\").",
+          },
+          {
+            emoji: "📝",
+            title: "Plusieurs print() à la suite",
+            explain: "Tu peux écrire autant de print() que tu veux. Python les exécute un par un, de haut en bas, et chacun affiche une nouvelle ligne.",
+            analogy: "C'est comme une liste de courses : Python fait tout dans l'ordre, point par point.",
+            points: [
+              "Python lit ton programme de la 1ère à la dernière ligne.",
+              "Chaque `print()` = une nouvelle ligne à l'écran.",
+              "Tu peux mixer texte, emojis et chiffres dans le même print().",
+            ],
+          },
+        ],
         code: 'print("🐶 Le chien dit : Ouaf !")\nprint("🐱 Le chat dit : Miaou !")\nprint("🐸 La grenouille dit : Coâ !")\nprint("🦁 Le lion dit : Roaaaar !")\nprint("🐍 Le serpent dit : Ssssss... je suis Python !")',
         exercise: {
           instruction: "Fais parler exactement ces 3 animaux :\n🐧 Le pingouin dit : Coin coin !\n🦊 Le renard dit : Glapissement !\n🐝 L'abeille dit : Bzzzz !",
@@ -106,6 +165,31 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les variables",
         description: "Une variable, c'est comme une boîte avec une étiquette !\nTu crées une boîte appelée 'prenom' et tu mets 'Alice' dedans.\nPlus tard, quand tu écris prenom, Python sait que c'est 'Alice' !\nEssaie de changer 'Alice' par ton propre prénom !",
+        concepts: [
+          {
+            emoji: "📦",
+            title: "Qu'est-ce qu'une variable ?",
+            explain: "Une variable est un espace de stockage dans la mémoire de l'ordinateur. Tu lui donnes un nom, et tu y ranges une valeur. Tu peux ensuite lire ou modifier cette valeur quand tu veux.",
+            analogy: "Imagine une boîte avec une étiquette. L'étiquette = le nom de la variable. Le contenu = la valeur. prenom = \"Alice\" veut dire : prends la boîte appelée prenom et mets-y Alice.",
+            points: [
+              "Créer une variable : `prenom = \"Alice\"` (on appelle ça une affectation)",
+              "Le signe `=` ne veut pas dire 'égal' mais 'met dans la boîte'.",
+              "Tu peux changer la valeur autant que tu veux : `prenom = \"Bob\"` remplace l'ancienne valeur.",
+              "Noms de variables : lettres, chiffres, _ (pas d'espaces ni de caractères spéciaux).",
+            ],
+          },
+          {
+            emoji: "🔤",
+            title: "Les f-strings : mixer texte et variables",
+            explain: "Une f-string te permet d'insérer la valeur d'une variable directement dans du texte. Tu mets f devant les guillemets, et les variables entre accolades { }.",
+            points: [
+              "Syntaxe : `f\"Bonjour {prenom} !\"` → affiche Bonjour Alice !",
+              "Le `f` avant les guillemets est obligatoire.",
+              "Tu peux mettre autant de variables que tu veux : `f\"{a} + {b} = {a+b}\"`",
+            ],
+            tip: "Tu peux aussi faire des calculs dans les accolades ! f\"Le double est {age * 2}\" fonctionne.",
+          },
+        ],
         code: 'prenom = "Alice"\nage = 12\nprefere_python = True\n\nprint(f"Je m\'appelle {prenom}")\nprint(f"J\'ai {age} ans")\nprint(f"J\'aime Python : {prefere_python}")',
         exercise: {
           instruction: "Utilise les variables pour afficher exactement :\nLe joueur Max a 100 points !",
@@ -137,6 +221,31 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les types de données",
         description: "Il existe différents types de valeurs en Python.\nUn texte s'écrit entre guillemets : \"Bonjour\".\nUn nombre entier s'écrit sans guillemets : 42.\nUn nombre à virgule aussi : 3.14.\nEn Python, OUI s'écrit True et NON s'écrit False — avec une majuscule obligatoire !",
+        concepts: [
+          {
+            emoji: "🏷️",
+            title: "Les 4 types fondamentaux",
+            explain: "Python classe les valeurs en types. Chaque type dit à Python comment stocker et utiliser la valeur.",
+            points: [
+              "`str` (chaîne) : du texte entre guillemets — ex: `\"Bonjour\"`, `'Python'`",
+              "`int` (entier) : un nombre sans virgule — ex: `42`, `-7`, `0`",
+              "`float` (décimal) : un nombre avec virgule — ex: `3.14`, `9.99`",
+              "`bool` (booléen) : vrai ou faux — seulement `True` ou `False` (majuscule obligatoire !)",
+            ],
+            tip: "Pour savoir le type d'une variable, utilise type(variable). Exemple : type(42) donne <class 'int'>.",
+          },
+          {
+            emoji: "🔄",
+            title: "Convertir un type en un autre",
+            explain: "Parfois tu as besoin de transformer un type en un autre. Par exemple, input() retourne toujours du texte, mais tu veux faire des calculs avec.",
+            points: [
+              "`int(\"42\")` convertit la chaîne `\"42\"` en entier `42`",
+              "`float(\"3.14\")` convertit en nombre décimal",
+              "`str(42)` convertit le nombre `42` en texte `\"42\"`",
+              "`int(input(\"Âge ? \"))` pose la question ET convertit la réponse en entier",
+            ],
+          },
+        ],
         code: '# Un texte s\'écrit entre guillemets\npersonnage = "Mario"\n\n# Un nombre entier s\'écrit sans guillemets\nvies = 3\nscore = 4200\n\n# Un nombre à virgule aussi\nvitesse = 8.5\n\n# True = OUI, False = NON (avec une majuscule !)\nest_invincible = False\n\nprint(f"Personnage : {personnage}")\nprint(f"Vies restantes : {vies}")\nprint(f"Score : {score} points")\nprint(f"Vitesse : {vitesse} km/h")\nprint(f"Invincible : {est_invincible}")',
         exercise: {
           instruction: "Affiche le type de chaque variable avec type() :\n(le résultat doit être sur 3 lignes séparées)",
@@ -147,6 +256,32 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les conditions if/else",
         description: "Grâce aux conditions, ton programme peut prendre des décisions tout seul !\nC'est comme dans la vraie vie : SI il pleut ALORS je prends mon parapluie SINON je mets des lunettes de soleil.\nEn Python, on écrit ça avec if (si), elif (ou bien si) et else (sinon).\nEssaie de changer l'âge dans le code et vois ce qui s'affiche !",
+        concepts: [
+          {
+            emoji: "🚦",
+            title: "if / elif / else — prendre des décisions",
+            explain: "Une condition permet à ton programme de choisir quoi faire selon la situation. Python évalue la condition : si elle est True, il exécute le bloc correspondant ; sinon il passe au suivant.",
+            analogy: "C'est comme un carrefour : SI tu tournes à gauche → une route. SINON SI tu continues → une autre. SINON → la troisième route.",
+            points: [
+              "`if condition:` — exécuté si la condition est vraie",
+              "`elif autre_condition:` — testé seulement si le if était faux (tu peux en mettre plusieurs)",
+              "`else:` — exécuté si tout le reste était faux (facultatif)",
+              "L'indentation (4 espaces) est obligatoire pour le code à l'intérieur !",
+            ],
+          },
+          {
+            emoji: "⚖️",
+            title: "Les opérateurs de comparaison",
+            explain: "Pour écrire une condition, tu as besoin de comparer des valeurs.",
+            points: [
+              "`==` égal à &nbsp;(attention : deux = pour comparer, un seul pour affecter)",
+              "`!=` différent de",
+              "`>` strictement supérieur — `>=` supérieur ou égal",
+              "`<` strictement inférieur — `<=` inférieur ou égal",
+            ],
+            tip: "La confusion classique : age = 18 (on met 18 dans la variable). age == 18 (on vérifie si c'est 18).",
+          },
+        ],
         code: 'age = 12\n\nif age >= 18:\n    print("Tu es majeur !")\nelif age >= 13:\n    print("Tu es ado !")\nelse:\n    print("Tu es enfant !")\n\nprint(f"Tu as {age} ans.")',
         exercise: {
           instruction: "Écris une condition : si age vaut 10, affiche 'Accès refusé', sinon affiche 'Bienvenue !'",
@@ -177,6 +312,21 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "La boucle while",
         description: "La boucle for répète un nombre fixe de fois. Mais parfois, tu veux répéter tant qu'une condition est vraie — c'est le rôle de while !\nC'est parfait pour des jeux où le joueur continue jusqu'à ce qu'il gagne ou perde.\nAttention : si la condition reste toujours vraie, la boucle tourne à l'infini !",
+        concepts: [
+          {
+            emoji: "🔁",
+            title: "La boucle while",
+            explain: "while répète un bloc de code TANT QUE une condition est vraie. À chaque tour, Python revérifie la condition. Dès qu'elle est fausse, la boucle s'arrête.",
+            analogy: "C'est comme manger des frites : TANT QU'il en reste dans l'assiette, tu en prends une. Quand l'assiette est vide, tu t'arrêtes.",
+            points: [
+              "Syntaxe : `while condition:` + code indenté à l'intérieur",
+              "Il faut TOUJOURS que la condition devienne fausse un jour, sinon boucle infinie !",
+              "`break` permet de sortir d'une boucle immédiatement.",
+              "`continue` passe directement au tour suivant sans finir le tour en cours.",
+            ],
+            tip: "Le piège classique : oublier de modifier la variable dans la boucle. Si compteur ne diminue jamais, while compteur > 0 tourne pour toujours !",
+          },
+        ],
         code: '# Compte à rebours avec while\ncompteur = 5\n\nwhile compteur > 0:\n    print(f"⏳ {compteur}...")\n    compteur -= 1\n\nprint("🚀 Décollage !")',
         exercise: {
           instruction: "Affiche les nombres de 1 à 5 avec une boucle while (un nombre par ligne).",
@@ -210,6 +360,21 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les boucles for",
         description: "Imagine que tu dois écrire 'Je n'oublierai pas mes devoirs' 100 fois... Avec une boucle, Python le fait pour toi en 2 lignes !\nUne boucle for répète des instructions autant de fois que tu veux.\nrange(1, 6) veut dire 'de 1 jusqu'à 5'. À chaque tour, la variable i prend la valeur suivante.",
+        concepts: [
+          {
+            emoji: "🔄",
+            title: "La boucle for",
+            explain: "for répète un bloc de code pour chaque élément d'une séquence. C'est le moyen le plus simple de répéter une action un nombre précis de fois.",
+            analogy: "Imagine une chaîne de montage : pour CHAQUE voiture qui passe, tu mets un volant. La boucle for fait pareil : elle traite chaque élément un par un.",
+            points: [
+              "Syntaxe : `for variable in séquence:` + code indenté",
+              "`range(5)` génère 0, 1, 2, 3, 4 (5 éléments, commence à 0)",
+              "`range(1, 6)` génère 1, 2, 3, 4, 5 (le dernier nombre est exclu)",
+              "`range(0, 10, 2)` génère 0, 2, 4, 6, 8 (3e paramètre = le pas)",
+              "Tu peux aussi boucler sur du texte : `for lettre in \"Python\":` donne P, y, t, h, o, n",
+            ],
+          },
+        ],
         code: '# Compter jusqu\'à 5\nfor i in range(1, 6):\n    print(f"Nombre : {i}")\n\nprint("")\n\n# Table de multiplication par 7\nfor i in range(1, 11):\n    print(f"7 x {i} = {7 * i}")',
         quiz: {
           questions: [
@@ -231,6 +396,22 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les listes",
         description: "Une liste, c'est comme un sac à dos dans lequel tu ranges plusieurs choses !\nAu lieu de créer une variable pour chaque fruit, tu les mets tous dans une seule liste entre crochets [ ].\nTu peux demander le premier élément (position 0), le dernier (-1), ou parcourir toute la liste avec for !",
+        concepts: [
+          {
+            emoji: "📋",
+            title: "Les listes",
+            explain: "Une liste stocke plusieurs valeurs dans une seule variable. On crée une liste avec des crochets [ ] et des virgules entre les éléments.",
+            analogy: "Une liste = un tableau d'affichage avec des cases numérotées. La 1ère case porte le numéro 0 (pas 1 !), la 2ème le numéro 1, etc.",
+            points: [
+              "Créer : `fruits = [\"pomme\", \"banane\", \"cerise\"]`",
+              "Accéder : `fruits[0]` → \"pomme\" &nbsp;| &nbsp;`fruits[-1]` → dernier élément",
+              "Ajouter à la fin : `fruits.append(\"kiwi\")`",
+              "Longueur : `len(fruits)` → 3",
+              "Modifier : `fruits[0] = \"mangue\"` remplace la pomme",
+            ],
+            tip: "Les indices commencent à 0 ! Le 1er élément est fruits[0], le 2ème est fruits[1], etc. fruits[-1] est un raccourci pour le dernier.",
+          },
+        ],
         code: 'fruits = ["pomme", "banane", "cerise", "kiwi"]\n\nprint(f"Nombre de fruits : {len(fruits)}")\nprint(f"Premier fruit : {fruits[0]}")\nprint(f"Dernier fruit : {fruits[-1]}")\n\nfor fruit in fruits:\n    print(f"🍎 {fruit}")',
         exercise: {
           instruction: "Crée une liste animaux avec [\"chat\", \"chien\", \"lapin\"] et affiche chaque animal sur une ligne.",
@@ -246,6 +427,31 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les fonctions",
         description: "Une fonction, c'est comme une recette de cuisine : tu l'écris une fois, et tu peux l'utiliser autant de fois que tu veux !\nTu crées une fonction avec def, tu lui donnes un nom et entre parenthèses tu mets les paramètres dont elle a besoin.\nPlus besoin de réécrire le même code !",
+        concepts: [
+          {
+            emoji: "🍳",
+            title: "Créer une fonction avec def",
+            explain: "Une fonction est un bloc de code qu'on nomme pour pouvoir le réutiliser. On la crée avec def, suivi du nom, des paramètres entre parenthèses, et d'un deux-points. Le corps est indenté.",
+            analogy: "C'est comme une recette de cuisine : tu l'écris une fois dans un livre, et n'importe qui peut la suivre autant de fois qu'il veut, avec des ingrédients différents.",
+            points: [
+              "`def nom_fonction(param1, param2):` pour créer",
+              "Appeler la fonction : `nom_fonction(valeur)`",
+              "Les paramètres sont des 'cases' qui reçoivent les valeurs passées",
+            ],
+            tip: "Donne toujours un nom clair à tes fonctions : `calculer_prix()` est bien mieux que `f()`.",
+          },
+          {
+            emoji: "↩️",
+            title: "Renvoyer une valeur avec return",
+            explain: "return permet à une fonction de donner un résultat qu'on peut utiliser ensuite. Quand Python rencontre return, il quitte immédiatement la fonction.",
+            points: [
+              "`return valeur` renvoie une valeur à celui qui a appelé la fonction",
+              "Sans return, la fonction renvoie automatiquement `None`",
+              "On peut stocker le résultat : `resultat = ma_fonction()`",
+            ],
+            tip: "Une fonction avec print() affiche à l'écran (effet). Une fonction avec return renvoie une valeur (résultat). Les deux sont utiles selon le cas !",
+          },
+        ],
         code: 'def saluer(prenom):\n    print(f"Bonjour {prenom} ! 👋")\n    print(f"Bienvenue sur PythonKids !")\n\ndef calculer(a, b):\n    return a + b\n\nsaluer("Alice")\nsaluer("Bob")\n\nresultat = calculer(10, 5)\nprint(f"10 + 5 = {resultat}")',
         exercise: {
           instruction: "Écris une fonction double(n) qui retourne n × 2. Affiche double(7).",
@@ -261,6 +467,19 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Boucle while et logique",
         description: "On combine la boucle while avec les opérateurs logiques and, or, not.\nand : les DEUX conditions doivent être vraies\nor : au moins UNE doit être vraie\nnot : inverse la condition (True devient False)\nCes outils permettent de créer des règles complexes facilement !",
+        concepts: [
+          {
+            emoji: "🔗",
+            title: "Les opérateurs logiques : and, or, not",
+            explain: "Ces opérateurs combinent plusieurs conditions. and est vrai si les DEUX conditions sont vraies. or est vrai si au moins UNE condition est vraie. not inverse : True devient False et inversement.",
+            analogy: "C'est comme en français : 'Il faut avoir 12 ans ET une carte membre' (and) vs 'Tu peux payer en CB OU en espèces' (or).",
+            points: [
+              "`A and B` : vrai uniquement si A est vrai ET B est vrai",
+              "`A or B` : vrai si A est vrai OU si B est vrai (ou les deux)",
+              "`not True` donne `False`, et `not False` donne `True`",
+            ],
+          },
+        ],
         code: 'age = 14\na_carte_etudiant = True\n\nif age < 18 and a_carte_etudiant:\n    print("✅ Tarif réduit !")\nelse:\n    print("Prix normal")\n\nprefere_pizza = False\nprefere_pates = True\n\nif prefere_pizza or prefere_pates:\n    print("On mange italien ce soir 🍕")\n\nest_ferme = False\nif not est_ferme:\n    print("Le magasin est ouvert 🏪")',
         exercise: {
           instruction: "Affiche 'Accès autorisé' si age >= 12 ET has_code est True, sinon 'Refusé'.",
@@ -276,6 +495,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les tuples",
         description: "Un tuple ressemble à une liste, mais il est immuable : une fois créé, on ne peut plus le modifier !\nOn l'écrit avec des parenthèses ( ) au lieu de crochets [ ].\nLes tuples sont parfaits pour stocker des données fixes, comme des coordonnées ou des couleurs RGB.",
+        concepts: [
+          {
+            emoji: "📦",
+            title: "Les tuples : des séquences fixes",
+            explain: "Un tuple est une séquence ordonnée d'éléments qu'on ne peut PAS modifier après sa création (immuable). On l'écrit avec des parenthèses ( ) et des virgules entre les éléments.",
+            analogy: "Comme les coordonnées GPS d'un lieu : une fois enregistrées, elles ne changent pas — c'est leur nature.",
+            points: [
+              "Créer : `point = (10, 20)` — parenthèses obligatoires",
+              "Accéder : `point[0]` pour le premier élément (comme une liste)",
+              "Dépackage : `x, y = point` assigne directement chaque valeur à une variable",
+            ],
+            tip: "Si tu n'as pas besoin de modifier une collection, préfère un tuple à une liste : c'est plus rapide et ça montre clairement que ces données sont fixes.",
+          },
+        ],
         code: '# Un tuple de coordonnées\npoint = (10, 20)\nprint(f"x = {point[0]}, y = {point[1]}")\n\n# Couleurs RGB\nrouge = (255, 0, 0)\nvert  = (0, 255, 0)\nbleu  = (0, 0, 255)\n\ncouleurs = [("Rouge", rouge), ("Vert", vert), ("Bleu", bleu)]\nfor nom, rgb in couleurs:\n    print(f"{nom} : R={rgb[0]}, G={rgb[1]}, B={rgb[2]}")\n\n# Dépackage de tuple\nx, y = point\nprint(f"Coordonnées : x={x}, y={y}")',
         exercise: {
           instruction: "Crée un tuple position avec (3, 7) et affiche : x=3, y=7",
@@ -304,6 +537,21 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les dictionnaires",
         description: "Un dictionnaire Python, c'est comme la fiche d'un joueur dans un jeu vidéo : chaque information a un nom (la clé) et une valeur.\nPar exemple : 'nom' → 'Alice', 'score' → 1500.\nOn écrit les dictionnaires entre accolades { }.",
+        concepts: [
+          {
+            emoji: "📋",
+            title: "Les dictionnaires : clé → valeur",
+            explain: "Un dictionnaire stocke des paires clé/valeur. La clé est un identifiant unique, et la valeur est l'information associée. On l'écrit entre accolades { } avec des deux-points entre clé et valeur.",
+            analogy: "Comme un carnet d'adresses : tu cherches un nom (la clé), et tu trouves immédiatement son numéro de téléphone (la valeur).",
+            points: [
+              "`{'clé': valeur, 'clé2': valeur2}` pour créer",
+              "`dict['clé']` pour lire une valeur",
+              "`dict['clé'] = nouvelle_valeur` pour modifier ou ajouter",
+              "`'clé' in dict` pour vérifier si une clé existe",
+            ],
+            tip: "Les clés sont uniques : si tu écris deux fois la même clé, la deuxième valeur écrase la première.",
+          },
+        ],
         code: 'joueur = {\n    "nom": "Alice",\n    "score": 1500,\n    "niveau": "Bâtisseur",\n    "badges": ["🌱", "⭐", "🚀"]\n}\n\nprint(f"Joueur : {joueur[\'nom\']}")\nprint(f"Score  : {joueur[\'score\']} pts")\nprint(f"Badges : {\' \'.join(joueur[\'badges\'])}")',
         quiz: {
           questions: [
@@ -325,6 +573,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Gestion des erreurs",
         description: "Tout le monde fait des erreurs en codant — même les pros !\nAvec try/except, ton programme ne plante plus quand quelque chose se passe mal.\ntry veut dire 'essaie ce code'.\nSi ça foire, except attrape l'erreur et affiche un message sympa au lieu de tout crasher.",
+        concepts: [
+          {
+            emoji: "🛡️",
+            title: "Protéger son code avec try/except",
+            explain: "try contient le code qui pourrait échouer. except attrape l'erreur si elle survient et exécute un code de remplacement. Le programme continue au lieu de planter brutalement.",
+            analogy: "C'est comme un airbag dans une voiture : tu espères ne jamais t'en servir, mais s'il y a un choc, il protège !",
+            points: [
+              "`try:` — 'essaie ce code'",
+              "`except NomErreur:` — 'si cette erreur arrive, fais ça'",
+              "Erreurs courantes : `ZeroDivisionError`, `ValueError`, `TypeError`, `IndexError`",
+            ],
+            tip: "Spécifie toujours le type d'erreur : `except ValueError` est bien mieux que `except` seul, qui masquerait n'importe quel bug.",
+          },
+        ],
         code: 'def diviser(a, b):\n    try:\n        resultat = a / b\n        print(f"{a} ÷ {b} = {resultat}")\n    except ZeroDivisionError:\n        print("❌ Impossible de diviser par zéro !")\n    except TypeError:\n        print("❌ Il faut des nombres !")\n\ndiviser(10, 2)\ndiviser(10, 0)\ndiviser(10, "cinq")',
         exercise: {
           instruction: "Utilise try/except pour afficher 'Erreur : division impossible' si diviseur vaut 0.",
@@ -355,6 +617,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Compréhensions de listes",
         description: "Une compréhension de liste, c'est une façon magique de créer une liste en une seule ligne !\nAu lieu d'écrire une boucle for sur 3 lignes pour remplir une liste, tu l'écris en une ligne entre crochets.\nC'est l'une des fonctionnalités les plus aimées de Python !",
+        concepts: [
+          {
+            emoji: "✨",
+            title: "Créer une liste en une ligne",
+            explain: "Une compréhension de liste remplace une boucle for + append() par une expression concise entre crochets. La syntaxe est : [expression for variable in iterable].",
+            analogy: "Comme dire 'donne-moi le double de chaque nombre de 1 à 10' en une phrase, plutôt que d'écrire toutes les étapes une par une.",
+            points: [
+              "`[x*2 for x in range(5)]` → `[0, 2, 4, 6, 8]`",
+              "Avec condition : `[x for x in range(10) if x % 2 == 0]` → les pairs",
+              "Plus lisible ET plus rapide qu'une boucle classique avec `append()`",
+            ],
+            tip: "Si ta compréhension devient trop longue ou difficile à lire, reviens à une boucle classique : la lisibilité prime toujours.",
+          },
+        ],
         code: '# Sans compréhension : 4 lignes\ncarres_long = []\nfor i in range(1, 6):\n    carres_long.append(i ** 2)\nprint(f"Ancienne méthode : {carres_long}")\n\n# Avec compréhension : 1 ligne ✨\ncarres = [i ** 2 for i in range(1, 6)]\nprint(f"Compréhension    : {carres}")\n\n# Avec condition : seulement les pairs\npairs = [i for i in range(1, 21) if i % 2 == 0]\nprint(f"Nombres pairs    : {pairs}")',
         exercise: {
           instruction: "Crée une liste des cubes de 1 à 5 avec une compréhension de liste.",
@@ -370,6 +646,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les ensembles (sets)",
         description: "Un ensemble (set) est une collection sans doublons et sans ordre particulier.\nIl est parfait pour éliminer les doublons d'une liste, vérifier rapidement si un élément existe, ou faire des opérations mathématiques comme l'union ou l'intersection.",
+        concepts: [
+          {
+            emoji: "🔵",
+            title: "Les ensembles (sets)",
+            explain: "Un set est une collection non ordonnée sans doublons. Python supprime automatiquement les éléments en double. C'est idéal pour tester l'appartenance et effectuer des opérations mathématiques d'ensembles.",
+            analogy: "Comme la liste d'invités d'une fête : chaque personne n'est présente qu'une fois, peu importe l'ordre dans lequel elle est arrivée.",
+            points: [
+              "Créer : `{val1, val2, val3}` ou `set(ma_liste)`",
+              "`x in mon_set` est ultra-rapide (bien plus qu'une liste)",
+              "Union : `A | B` ; Intersection : `A & B` ; Différence : `A - B`",
+            ],
+            tip: "Astuce classique pour supprimer les doublons d'une liste : `liste_unique = list(set(ma_liste))`.",
+          },
+        ],
         code: '# Créer un set\ncouleurs = {"rouge", "bleu", "vert", "rouge"}\nprint(f"Set (sans doublons) : {couleurs}")\nprint(f"Taille : {len(couleurs)}")\n\n# Éliminer les doublons d\'une liste\nnotes = [15, 18, 12, 15, 16, 18, 12]\nuniques = list(set(notes))\nprint(f"Notes sans doublons : {sorted(uniques)}")\n\n# Union et intersection\nclub_foot = {"Alice", "Bob", "Charlie"}\nclub_info = {"Bob", "Diana", "Charlie"}\nprint(f"Dans les deux clubs : {club_foot & club_info}")',
         exercise: {
           instruction: "Supprime les doublons de [3, 1, 4, 1, 5, 9, 2, 6, 5, 3] et affiche-les triés.",
@@ -398,6 +688,31 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "La programmation orientée objet",
         description: "Imagine que tu crées un jeu vidéo avec des personnages.\nChaque personnage a un nom, des points de vie, et peut attaquer.\nEn Python, on peut créer un 'moule' pour ces personnages — on appelle ça une classe !\nEnsuite on fabrique autant de personnages qu'on veut à partir de ce moule.",
+        concepts: [
+          {
+            emoji: "🏭",
+            title: "Classes et objets",
+            explain: "Une classe est un modèle (un moule) pour créer des objets. Un objet est une instance de classe — il possède les attributs (données) et les méthodes (fonctions) définis par la classe.",
+            analogy: "La classe est le plan d'un gâteau, l'objet est le gâteau lui-même. Avec un seul plan, tu peux faire autant de gâteaux que tu veux, avec des parfums différents !",
+            points: [
+              "`class NomClasse:` pour définir une classe",
+              "`__init__(self, ...)` initialise l'objet à sa création (le constructeur)",
+              "`self` représente l'objet lui-même — toujours premier paramètre des méthodes",
+              "Créer un objet : `mon_objet = MaClasse(param1, param2)`",
+            ],
+          },
+          {
+            emoji: "⚙️",
+            title: "Attributs et méthodes",
+            explain: "Les attributs sont les données propres à chaque objet (comme nom, vie). Les méthodes sont les fonctions de l'objet (comme attaquer, soigner). On y accède avec le point : objet.attribut ou objet.methode().",
+            points: [
+              "`self.nom = nom` dans __init__ crée un attribut de l'objet",
+              "Une méthode est une fonction avec `self` comme premier paramètre",
+              "`objet.methode()` appelle la méthode sur cet objet précis",
+            ],
+            tip: "`__str__` est la méthode spéciale appelée automatiquement par print(objet) — très pratique pour afficher un objet joliment.",
+          },
+        ],
         code: 'class Personnage:\n    def __init__(self, nom, vie):\n        self.nom = nom\n        self.vie = vie\n        self.niveau = 1\n    \n    def attaquer(self, ennemi, degats):\n        ennemi.vie -= degats\n        print(f"⚔️ {self.nom} attaque {ennemi.nom} : -{degats} PV")\n    \n    def __str__(self):\n        return f"{self.nom} (Niv.{self.niveau}) — ❤️ {self.vie} PV"\n\nheros = Personnage("Arthur", 100)\nvillain = Personnage("Dragon", 200)\n\nprint(heros)\nprint(villain)\nheros.attaquer(villain, 35)\nprint(villain)',
         quiz: {
           questions: [
@@ -419,6 +734,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les modules Python",
         description: "Python est livré avec des boîtes à outils toutes prêtes qu'on appelle des modules !\nTu veux tirer au sort ? Utilise random.\nTu veux faire des maths compliquées ? Utilise math.\nTu veux connaître la date ? Utilise datetime.\nIl suffit d'écrire import au début pour déballer la boîte !",
+        concepts: [
+          {
+            emoji: "📦",
+            title: "Importer et utiliser des modules",
+            explain: "Un module est un fichier Python contenant des fonctions et variables prêtes à l'emploi. On l'importe avec import, puis on accède à son contenu avec un point.",
+            analogy: "Comme une boîte à outils dans un garage : tu n'as pas besoin de fabriquer chaque outil toi-même — tu l'ouvres et tu prends ce dont tu as besoin.",
+            points: [
+              "`import math` puis `math.sqrt(16)` pour utiliser la racine carrée",
+              "`from datetime import datetime` importe uniquement ce dont tu as besoin",
+              "Modules clés : `random` (hasard), `math` (maths), `datetime` (dates), `os` (système)",
+            ],
+            tip: "Préfère `from module import fonction` si tu utilises souvent la fonction — tu n'as plus besoin d'écrire le nom du module à chaque fois.",
+          },
+        ],
         code: 'import random\nimport math\nfrom datetime import datetime\n\n# random\nprint("🎲 Nombres aléatoires :")\nfor _ in range(3):\n    print(f"  {random.randint(1, 100)}")\n\n# math\nprint(f"\\n📐 Racine de 144 : {math.sqrt(144)}")\nprint(f"📐 Pi : {math.pi:.4f}")\n\n# datetime\nmaintenant = datetime.now()\nprint(f"\\n📅 Aujourd\'hui : {maintenant.strftime(\'%d/%m/%Y\')}")',
         exercise: {
           instruction: "Importe math et affiche la racine carrée de 225.",
@@ -434,6 +763,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Algorithmes de tri",
         description: "Un algorithme, c'est une suite d'étapes pour résoudre un problème — comme une recette de cuisine, mais pour l'ordinateur !\nLe tri, c'est un grand classique : comment ranger une liste de nombres dans l'ordre ?\nOn va voir le 'tri à bulles' : on compare deux nombres voisins et on les échange si besoin.",
+        concepts: [
+          {
+            emoji: "🔢",
+            title: "Qu'est-ce qu'un algorithme ?",
+            explain: "Un algorithme est une suite d'instructions précises pour résoudre un problème. Le tri à bulles compare les éléments voisins et les échange jusqu'à ce que la liste soit ordonnée.",
+            analogy: "Imagine que tu ranges des cartes dans ta main : tu compares deux cartes côte à côte, tu les échanges si besoin, et tu recommences jusqu'à ce que tout soit en ordre.",
+            points: [
+              "Le tri à bulles : O(n²) — efficace pour les petites listes",
+              "`sorted(liste)` et `liste.sort()` sont bien plus rapides en pratique",
+              "`sorted(liste, reverse=True)` trie du plus grand au plus petit",
+            ],
+            tip: "En vrai code Python, utilise toujours `sorted()` ou `.sort()` — ces fonctions intégrées sont ultra-optimisées et font le boulot en un seul appel.",
+          },
+        ],
         code: 'def tri_bulles(liste):\n    n = len(liste)\n    for i in range(n):\n        for j in range(0, n - i - 1):\n            if liste[j] > liste[j + 1]:\n                liste[j], liste[j + 1] = liste[j + 1], liste[j]\n    return liste\n\nnombres = [64, 34, 25, 12, 22, 11, 90]\nprint(f"Avant : {nombres}")\ntrie = tri_bulles(nombres.copy())\nprint(f"Après : {trie}")\n\nprint(f"sorted(): {sorted([64, 34, 25, 12, 22, 11, 90])}")',
         exercise: {
           instruction: "Trie [5, 2, 8, 1, 9, 3] dans l'ordre décroissant avec sorted() et affiche-le.",
@@ -449,6 +792,19 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Lambda, map et filter",
         description: "Python permet d'écrire des fonctions ultra-courtes appelées fonctions lambda.\nmap() applique une fonction à chaque élément d'une liste.\nfilter() garde uniquement les éléments qui vérifient une condition.\nCombinées aux lambdas, ces fonctions permettent d'écrire du code très élégant en une ligne !",
+        concepts: [
+          {
+            emoji: "⚡",
+            title: "Lambda, map, filter",
+            explain: "Une lambda est une fonction anonyme en une ligne. map() applique une fonction à chaque élément. filter() ne garde que les éléments qui passent un test.",
+            points: [
+              "`lambda x: x * 2` — fonction anonyme qui double x",
+              "`list(map(lambda x: x**2, [1,2,3]))` → `[1, 4, 9]`",
+              "`list(filter(lambda x: x > 0, [-1, 2, -3, 4]))` → `[2, 4]`",
+            ],
+            tip: "Pour un usage simple, les compréhensions de listes sont souvent plus lisibles que map/filter. Utilise map/filter quand tu as déjà une fonction existante à réutiliser.",
+          },
+        ],
         code: '# Lambda : mini-fonction anonyme\ndouble = lambda x: x * 2\nprint(f"Double de 7 : {double(7)}")\n\n# map : appliquer à chaque élément\nnombres = [1, 2, 3, 4, 5]\ncarres = list(map(lambda x: x ** 2, nombres))\nprint(f"Carrés : {carres}")\n\n# filter : garder seulement certains éléments\npairs = list(filter(lambda x: x % 2 == 0, nombres))\nprint(f"Pairs : {pairs}")',
         exercise: {
           instruction: "Utilise map et une lambda pour tripler chaque nombre de [1, 2, 3, 4, 5].",
@@ -464,6 +820,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "La récursivité",
         description: "Une fonction récursive est une fonction qui s'appelle elle-même !\nC'est un concept puissant pour résoudre des problèmes qui se répètent.\nIl faut toujours prévoir un cas de base (condition d'arrêt) pour éviter que ça tourne à l'infini.\nExemple classique : la factorielle. 5! = 5 × 4! = 5 × 4 × 3! = ...",
+        concepts: [
+          {
+            emoji: "🔄",
+            title: "La récursivité",
+            explain: "Une fonction récursive s'appelle elle-même pour résoudre des sous-problèmes plus simples. Il faut TOUJOURS un cas de base (condition d'arrêt), sinon la fonction tourne à l'infini.",
+            analogy: "Imagine des poupées russes : pour ouvrir la grande, tu ouvres la suivante, et ainsi de suite, jusqu'à la toute petite qui ne s'ouvre plus (le cas de base).",
+            points: [
+              "Cas de base : la condition qui arrête les appels récursifs",
+              "Cas récursif : l'appel de la fonction sur un problème plus petit",
+              "Exemple : `factorielle(5)` = `5 × factorielle(4)` = `5 × 4 × 3 × 2 × 1`",
+            ],
+            tip: "Si tu oublies le cas de base, Python s'arrête après ~1000 appels avec une RecursionError — c'est sa protection contre les boucles infinies.",
+          },
+        ],
         code: 'def factorielle(n):\n    if n <= 1:\n        return 1\n    return n * factorielle(n - 1)\n\nfor i in range(1, 8):\n    print(f"{i}! = {factorielle(i)}")\n\n# Fibonacci récursif\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nfib = [fibonacci(i) for i in range(10)]\nprint(f"\\nFibonacci : {fib}")',
         exercise: {
           instruction: "Écris une fonction récursive somme(n) qui calcule 1+2+...+n. Affiche somme(5).",
@@ -492,6 +862,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Le module json",
         description: "JSON (JavaScript Object Notation) est le format universel pour échanger des données sur internet.\nEn Python, le module json permet de convertir un dictionnaire en texte JSON (sérialisation) et inversement (désérialisation).\nQuand tu parles à une API web, elle te répond en JSON !",
+        concepts: [
+          {
+            emoji: "🌐",
+            title: "JSON : le langage universel du web",
+            explain: "JSON est un format texte pour représenter des données structurées. json.dumps() convertit un objet Python en texte JSON. json.loads() fait l'inverse : il transforme du texte JSON en dictionnaire Python.",
+            analogy: "C'est comme une lettre internationale : peu importe la langue des deux côtés, JSON est la traduction commune que tout le monde comprend.",
+            points: [
+              "`json.dumps(dict)` → texte JSON (pour envoyer des données)",
+              "`json.loads(texte)` → dictionnaire Python (pour recevoir des données)",
+              "`indent=2` dans dumps() formate joliment le JSON avec de l'indentation",
+            ],
+            tip: "Presque toutes les APIs web retournent du JSON. Maîtriser json.loads() et json.dumps() est indispensable pour construire des vraies applications.",
+          },
+        ],
         code: 'import json\n\n# Dictionnaire Python → texte JSON\nprofil = {\n    "username": "Alice",\n    "score": 1500,\n    "badges": ["🌱", "⭐", "🚀"],\n    "actif": True\n}\n\ntexte_json = json.dumps(profil, indent=2, ensure_ascii=False)\nprint("Texte JSON :")\nprint(texte_json)\n\n# Texte JSON → dictionnaire Python\njson_recu = \'{"ville": "Paris", "population": 2161000, "capitale": true}\'\ndonnees = json.loads(json_recu)\nprint(f"\\nVille : {donnees[\'ville\']}")\nprint(f"Population : {donnees[\'population\']:,}")',
         quiz: {
           questions: [
@@ -528,6 +912,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Les expressions régulières",
         description: "Les expressions régulières (regex) sont un langage pour décrire des motifs dans du texte.\nTu peux trouver tous les emails, les numéros de téléphone, les mots qui commencent par une majuscule, etc.\n. = n'importe quel caractère / \\d = un chiffre / \\w = une lettre ou chiffre / + = un ou plusieurs",
+        concepts: [
+          {
+            emoji: "🔍",
+            title: "Les expressions régulières (regex)",
+            explain: "Une regex est un motif qui décrit un type de texte. Le module re permet de chercher, extraire ou remplacer des morceaux de texte selon ces motifs.",
+            points: [
+              "`\\d` = un chiffre (0-9) ; `\\d+` = un ou plusieurs chiffres",
+              "`\\w` = une lettre ou chiffre ; `.` = n'importe quel caractère",
+              "`re.findall(pattern, texte)` → liste de toutes les correspondances",
+              "`re.sub(pattern, remplacement, texte)` → remplace les correspondances",
+            ],
+            tip: "Utilise toujours une raw string (r'...') pour tes patterns regex — sinon Python interprétera les backslashes avant re, ce qui donnera des résultats inattendus.",
+          },
+        ],
         code: 'import re\n\ntexte = "Contact: alice@python.fr, bob@code.com ou au 06-12-34-56-78"\n\n# Trouver tous les emails\nemails = re.findall(r\'\\w+@\\w+\\.\\w+\', texte)\nprint(f"Emails trouvés : {emails}")\n\n# Trouver le numéro de téléphone\ntel = re.search(r\'\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}\', texte)\nif tel:\n    print(f"Téléphone : {tel.group()}")\n\n# Remplacer des mots\nphrase = "Python est super et Python est puissant"\nnouvelle = re.sub(r\'Python\', \'🐍 Python\', phrase)\nprint(f"\\nAvec emojis : {nouvelle}")',
         exercise: {
           instruction: "Utilise re.findall pour trouver tous les nombres dans la phrase.",
@@ -576,6 +974,29 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Héritage et polymorphisme",
         description: "L'héritage permet à une classe d'utiliser les attributs et méthodes d'une autre classe !\nTu crées une classe \"mère\" générale, et des classes \"filles\" spécialisées.\nLe mot-clé super() appelle le constructeur de la classe mère.\nLe polymorphisme : chaque classe peut avoir sa propre version d'une méthode.",
+        concepts: [
+          {
+            emoji: "🧬",
+            title: "Héritage : réutiliser une classe",
+            explain: "Une classe peut hériter d'une autre avec class Enfant(Parent). La classe enfant récupère tous les attributs et méthodes du parent, et peut en ajouter ou les modifier.",
+            analogy: "Comme dans la vie : un enfant hérite des traits de ses parents, mais a aussi sa propre personnalité.",
+            points: [
+              "`class Voiture(Vehicule):` hérite de Vehicule",
+              "`super().__init__(...)` appelle le constructeur du parent",
+              "La classe enfant peut redéfinir une méthode (polymorphisme)",
+            ],
+          },
+          {
+            emoji: "🔄",
+            title: "Polymorphisme",
+            explain: "Le polymorphisme permet à des objets de types différents de répondre au même appel de méthode, chacun à sa façon. Si chaque véhicule a klaxonner(), chaque sous-classe peut avoir son propre son.",
+            points: [
+              "Redéfinir une méthode dans une sous-classe = surcharge (override)",
+              "Appeler la même méthode sur des objets différents → comportements différents",
+              "Très utile pour traiter une liste d'objets mixtes uniformément",
+            ],
+          },
+        ],
         code: 'class Vehicule:\n    def __init__(self, marque, couleur):\n        self.marque = marque\n        self.couleur = couleur\n    \n    def description(self):\n        return f"{self.couleur} {self.marque}"\n    \n    def klaxonner(self):\n        return "Beep !"\n\nclass Voiture(Vehicule):\n    def __init__(self, marque, couleur, portes):\n        super().__init__(marque, couleur)\n        self.portes = portes\n    \n    def description(self):\n        return f"Voiture {self.couleur} {self.marque} ({self.portes} portes)"\n    \n    def klaxonner(self):\n        return "Pouet Pouet !"\n\nclass Moto(Vehicule):\n    def klaxonner(self):\n        return "Vroooom !"\n\nvehicules = [\n    Voiture("Renault", "Rouge", 4),\n    Moto("Yamaha", "Noire"),\n    Voiture("Peugeot", "Bleue", 5),\n]\n\nfor v in vehicules:\n    print(f"{v.description()} → {v.klaxonner()}")',
         exercise: {
           instruction: "Crée une classe Oiseau qui hérite d'Animal et surcharge parler() pour retourner 'Cui cui !'.\nAffiche le nom puis le cri d'un Oiseau('Tweety').",
@@ -622,6 +1043,20 @@ export const LEVELS_DATA: Record<string, LevelData> = {
       {
         title: "Générateurs et yield",
         description: "Un générateur est une fonction qui produit des valeurs une par une avec yield.\nAu lieu de tout calculer et stocker en mémoire, il génère la valeur suivante à la demande.\nC'est parfait pour traiter de grandes quantités de données sans saturer la mémoire !\nyield met la fonction en pause et reprend au même endroit à l'appel suivant.",
+        concepts: [
+          {
+            emoji: "🏭",
+            title: "Générateurs et yield",
+            explain: "Un générateur est une fonction qui utilise yield au lieu de return. Il produit les valeurs une par une, seulement quand on les demande, sans tout stocker en mémoire.",
+            analogy: "Comme un distributeur de tickets : il ne fabrique pas tous les tickets d'avance — il en produit un nouveau à chaque fois que tu appuies sur le bouton.",
+            points: [
+              "`yield valeur` met la fonction en pause et retourne la valeur",
+              "La fonction reprend là où elle s'est arrêtée au prochain appel",
+              "Utilise `for x in mon_generateur():` pour parcourir les valeurs",
+            ],
+            tip: "Les générateurs sont parfaits pour traiter des fichiers très volumineux ou des suites infinies — ils ne chargent qu'une valeur à la fois en mémoire.",
+          },
+        ],
         code: 'def fibonacci_gen():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\ndef multiples_de(n, limite):\n    valeur = n\n    while valeur <= limite:\n        yield valeur\n        valeur += n\n\nfrom itertools import islice\n\n# Fibonacci : prendre seulement les 10 premiers\nfibs = list(islice(fibonacci_gen(), 10))\nprint(f"Fibonacci : {fibs}")\n\n# Multiples de 4 jusqu\'à 30\nmult = list(multiples_de(4, 30))\nprint(f"Multiples de 4 : {mult}")\n\n# Expression génératrice : comme une list comprehension mais lazy\npairs_carres = sum(x**2 for x in range(1, 11) if x % 2 == 0)\nprint(f"Somme carrés pairs (1-10) : {pairs_carres}")',
         exercise: {
           instruction: "Écris un générateur compter(debut, fin) qui produit les entiers de debut à fin inclus.\nAffiche chaque valeur générée par compter(1, 5) sur une ligne.",
