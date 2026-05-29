@@ -1,3 +1,6 @@
+[variables]
+NIXPACKS_CACHE_KEY = "v2"
+
 [phases.install]
 cmds = ["npm install --legacy-peer-deps"]
 
