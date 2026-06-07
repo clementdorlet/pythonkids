@@ -447,8 +447,7 @@
     "stat_energy": "⚡ Énergie",
     "name_label": "Prénom :",
     "reset_button": "Réinitialiser",
-    "shop_link": "boutique",
-    "shop_note": "💡 Les skins achetés dans la {link} changent l'aura de ton robot"
+    "shop_note": "💡 Les skins achetés dans la <link>boutique</link> changent l'aura de ton robot"
   },
   "Certificate": {
     "locked": "Certificat non disponible",

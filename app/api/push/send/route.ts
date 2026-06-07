@@ -1,9 +1,7 @@
 import webpush from "web-push";
-import { promises as fs } from "fs";
-import path from "path";
+import { readData, updateData } from "@/lib/serverStorage";
 
-const DATA_DIR = process.env.DATA_DIR ?? path.join(process.cwd(), "data");
-const SUBS_FILE = path.join(DATA_DIR, "push-subscriptions.json");
+const SUBS_FILE = "push-subscriptions.json";
 
 export async function POST(request: Request) {
   const secret = request.headers.get("x-push-secret");
@@ -21,11 +19,8 @@ export async function POST(request: Request) {
 
   webpush.setVapidDetails(subject, publicKey, privateKey);
 
-  let subs: PushSubscriptionJSON[] = [];
-  try {
-    const raw = await fs.readFile(SUBS_FILE, "utf-8");
-    subs = JSON.parse(raw) as PushSubscriptionJSON[];
-  } catch {
+  const subs = await readData<PushSubscriptionJSON[]>(SUBS_FILE, []);
+  if (subs.length === 0) {
     return Response.json({ sent: 0, message: "Aucun abonné" });
   }
 
@@ -51,8 +46,9 @@ export async function POST(request: Request) {
   );
 
   if (failed.length > 0) {
-    const valid = subs.filter((s) => !failed.includes(s.endpoint ?? ""));
-    await fs.writeFile(SUBS_FILE, JSON.stringify(valid, null, 2));
+    await updateData<PushSubscriptionJSON[]>(SUBS_FILE, [], (current) =>
+      current.filter((s) => !failed.includes(s.endpoint ?? ""))
+    );
   }
 
   return Response.json({ sent, failed: failed.length });

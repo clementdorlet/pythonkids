@@ -61,7 +61,16 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\\\\app\\\\[locale]\\\\battle-pass\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\\\\app\\\\[locale]\\\\editor\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\\\\app\\\\[locale]\\\\duel\")",
-      "PowerShell(git add *)"
+      "PowerShell(git add *)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" log --oneline -5)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" add app/api/feedback/route.ts)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" commit -m \"Fix build: instantiate Resend inside handler to avoid missing API key at build time\")",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" push)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" add components/PushNotificationSetup.tsx)",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" commit -m \"Fix build: guard navigator access in PushNotificationSetup for SSR\")",
+      "Bash(git -C \"C:\\\\Users\\\\cyril\\\\OneDrive\\\\02. Clément\\\\Projets\\\\PythonKids\" commit --allow-empty -m \"chore: bust Railway build cache\")",
+      "Bash(git *)"
     ]
   }
 }

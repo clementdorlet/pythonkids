@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import AppHeader from "@/components/AppHeader";
 import PetRobot from "@/components/PetRobot";
 import PythonEditor from "@/components/PythonEditor";
@@ -206,7 +207,7 @@ def etat():
             </div>
 
             <p className="mt-4 text-[11px] text-gray-600 text-center">
-              {t("shop_note", { link: <a href="/shop" className="text-cyan-500 hover:underline">{t("shop_link")}</a> })}
+              {t.rich("shop_note", { link: (chunks) => <Link href="/shop" className="text-cyan-500 hover:underline">{chunks}</Link> })}
             </p>
           </div>
 

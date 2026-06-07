@@ -1,33 +1,15 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { readData, updateData } from "@/lib/serverStorage";
+import { isValidUsername } from "@/lib/usernames";
+import type { DuelRoom } from "@/lib/apiTypes";
 
-const DATA_FILE = join(process.cwd(), "data", "duels.json");
+export type { DuelPlayer, DuelRoom } from "@/lib/apiTypes";
 
-export interface DuelPlayer {
-  username: string;
-  status: "waiting" | "coding" | "solved";
-  solvedAt: string | null;
-}
+const FILE = "duels.json";
 
-export interface DuelRoom {
-  roomId: string;
-  challengeId: string;
-  players: DuelPlayer[];
-  createdAt: string;
-}
-
-function readData(): DuelRoom[] {
-  try {
-    if (!existsSync(DATA_FILE)) { writeFileSync(DATA_FILE, "[]"); return []; }
-    const all = JSON.parse(readFileSync(DATA_FILE, "utf-8")) as DuelRoom[];
-    // Nettoyer les rooms de plus de 2h
-    const cutoff = Date.now() - 2 * 60 * 60 * 1000;
-    return all.filter((r) => new Date(r.createdAt).getTime() > cutoff);
-  } catch { return []; }
-}
-
-function writeData(data: DuelRoom[]): void {
-  writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+// Nettoyer les rooms de plus de 2h
+function fresh(rooms: DuelRoom[]): DuelRoom[] {
+  const cutoff = Date.now() - 2 * 60 * 60 * 1000;
+  return rooms.filter((r) => new Date(r.createdAt).getTime() > cutoff);
 }
 
 function randomId(): string {
@@ -37,7 +19,7 @@ function randomId(): string {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const roomId = url.searchParams.get("roomId");
-  const rooms = readData();
+  const rooms = fresh(await readData<DuelRoom[]>(FILE, []));
   if (!roomId) return Response.json(rooms);
   const room = rooms.find((r) => r.roomId === roomId);
   if (!room) return Response.json({ error: "Room introuvable" }, { status: 404 });
@@ -52,44 +34,61 @@ export async function POST(request: Request) {
     challengeId?: string;
   };
 
-  const rooms = readData();
+  if (!isValidUsername(body.username)) {
+    return Response.json({ error: "Pseudo invalide" }, { status: 400 });
+  }
+  const username = body.username;
 
   if (body.action === "create") {
-    if (!body.username || !body.challengeId) return Response.json({ error: "Invalid" }, { status: 400 });
+    if (!body.challengeId) return Response.json({ error: "Invalid" }, { status: 400 });
     const room: DuelRoom = {
       roomId: randomId(),
       challengeId: body.challengeId,
-      players: [{ username: body.username, status: "coding", solvedAt: null }],
+      players: [{ username, status: "coding", solvedAt: null }],
       createdAt: new Date().toISOString(),
     };
-    rooms.push(room);
-    writeData(rooms);
+    await updateData<DuelRoom[]>(FILE, [], (rooms) => [...fresh(rooms), room]);
     return Response.json(room);
   }
 
   if (body.action === "join") {
-    if (!body.username || !body.roomId) return Response.json({ error: "Invalid" }, { status: 400 });
-    const idx = rooms.findIndex((r) => r.roomId === body.roomId);
-    if (idx === -1) return Response.json({ error: "Room introuvable" }, { status: 404 });
-    const room = rooms[idx];
-    if (room.players.length >= 2) return Response.json({ error: "Room pleine" }, { status: 409 });
-    if (room.players.find((p) => p.username === body.username)) return Response.json(room);
-    room.players.push({ username: body.username, status: "coding", solvedAt: null });
-    writeData(rooms);
-    return Response.json(room);
+    if (!body.roomId) return Response.json({ error: "Invalid" }, { status: 400 });
+    let error: { message: string; status: number } | null = null;
+    let joined: DuelRoom | null = null;
+    await updateData<DuelRoom[]>(FILE, [], (all) => {
+      const rooms = fresh(all);
+      const room = rooms.find((r) => r.roomId === body.roomId);
+      if (!room) { error = { message: "Room introuvable", status: 404 }; return rooms; }
+      if (room.players.find((p) => p.username === username)) { joined = room; return rooms; }
+      if (room.players.length >= 2) { error = { message: "Room pleine", status: 409 }; return rooms; }
+      room.players.push({ username, status: "coding", solvedAt: null });
+      joined = room;
+      return rooms;
+    });
+    if (error) {
+      const { message, status } = error;
+      return Response.json({ error: message }, { status });
+    }
+    return Response.json(joined);
   }
 
   if (body.action === "solve") {
-    if (!body.username || !body.roomId) return Response.json({ error: "Invalid" }, { status: 400 });
-    const idx = rooms.findIndex((r) => r.roomId === body.roomId);
-    if (idx === -1) return Response.json({ error: "Room introuvable" }, { status: 404 });
-    const player = rooms[idx].players.find((p) => p.username === body.username);
-    if (player && player.status !== "solved") {
-      player.status = "solved";
-      player.solvedAt = new Date().toISOString();
-    }
-    writeData(rooms);
-    return Response.json(rooms[idx]);
+    if (!body.roomId) return Response.json({ error: "Invalid" }, { status: 400 });
+    let solved: DuelRoom | null = null;
+    await updateData<DuelRoom[]>(FILE, [], (all) => {
+      const rooms = fresh(all);
+      const room = rooms.find((r) => r.roomId === body.roomId);
+      if (!room) return rooms;
+      const player = room.players.find((p) => p.username === username);
+      if (player && player.status !== "solved") {
+        player.status = "solved";
+        player.solvedAt = new Date().toISOString();
+      }
+      solved = room;
+      return rooms;
+    });
+    if (!solved) return Response.json({ error: "Room introuvable" }, { status: 404 });
+    return Response.json(solved);
   }
 
   return Response.json({ error: "Action inconnue" }, { status: 400 });

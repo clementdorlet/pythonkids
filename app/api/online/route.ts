@@ -1,24 +1,9 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
-import { join } from "path";
+import { readData, updateData } from "@/lib/serverStorage";
 
-const DATA_FILE = join(process.cwd(), "data", "online.json");
+const FILE = "online.json";
 const TTL_MS = 2 * 60 * 1000; // 2 minutes
 
 type OnlineStore = Record<string, string>; // sessionId → ISO timestamp
-
-function readData(): OnlineStore {
-  try {
-    if (!existsSync(DATA_FILE)) return {};
-    return JSON.parse(readFileSync(DATA_FILE, "utf-8")) as OnlineStore;
-  } catch {
-    return {};
-  }
-}
-
-function writeData(data: OnlineStore): void {
-  mkdirSync(join(process.cwd(), "data"), { recursive: true });
-  writeFileSync(DATA_FILE, JSON.stringify(data));
-}
 
 function countActive(data: OnlineStore): number {
   const cutoff = Date.now() - TTL_MS;
@@ -33,7 +18,7 @@ function purge(data: OnlineStore): OnlineStore {
 }
 
 export async function GET() {
-  const data = readData();
+  const data = await readData<OnlineStore>(FILE, {});
   return Response.json({ count: countActive(data) });
 }
 
@@ -42,9 +27,12 @@ export async function POST(request: Request) {
   if (!body.sessionId || typeof body.sessionId !== "string" || body.sessionId.length > 64) {
     return Response.json({ error: "Invalid" }, { status: 400 });
   }
+  const sessionId = body.sessionId;
 
-  const data = purge(readData());
-  data[body.sessionId] = new Date().toISOString();
-  writeData(data);
-  return Response.json({ count: countActive(data) });
+  const updated = await updateData<OnlineStore>(FILE, {}, (data) => {
+    const purged = purge(data);
+    purged[sessionId] = new Date().toISOString();
+    return purged;
+  });
+  return Response.json({ count: countActive(updated) });
 }
