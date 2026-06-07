@@ -1,7 +1,16 @@
 import { Resend } from "resend";
+import { updateData } from "@/lib/serverStorage";
+
+interface FeedbackEntry {
+  name?: string;
+  message: string;
+  page?: string;
+  date: string;
+}
+
+const MAX_ENTRIES = 500;
 
 export async function POST(request: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
   const { name, message, page } = await request.json() as {
     name?: string;
     message: string;
@@ -12,6 +21,23 @@ export async function POST(request: Request) {
     return Response.json({ error: "Message vide" }, { status: 400 });
   }
 
+  // Sans clé Resend (mode « tout gratuit » / stores) : on stocke dans DATA_DIR/feedback.json
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || apiKey.startsWith("re_VOTRE")) {
+    await updateData<FeedbackEntry[]>("feedback.json", [], (list) => {
+      list.push({
+        name: name?.trim().slice(0, 50) || undefined,
+        message: message.trim().slice(0, 2000),
+        page: page?.slice(0, 200),
+        date: new Date().toISOString(),
+      });
+      if (list.length > MAX_ENTRIES) list.splice(0, list.length - MAX_ENTRIES);
+      return list;
+    });
+    return Response.json({ ok: true });
+  }
+
+  const resend = new Resend(apiKey);
   try {
     await resend.emails.send({
       from: "PythonKids Feedback <onboarding@resend.dev>",

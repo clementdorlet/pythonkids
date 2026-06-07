@@ -354,7 +354,9 @@
     "promo_used": "⚠️ This code has already been used on this device.",
     "promo_invalid": "❌ Invalid code. Check the spelling!",
     "payment_secure": "Secure payment via PayPal · Gems are credited instantly",
-    "gems_hint": "💎 Earn gems by opening chests in the daily series or completing levels!"
+    "gems_hint": "💎 Earn gems by opening chests in the daily series or completing levels!",
+    "gems_free_title": "Everything here is earned by playing!",
+    "gems_free_desc": "Complete lessons, take on challenges, open chests and finish quests to earn gems."
   },
   "Leaderboard": {
     "title": "Hall of Fame 🏆",

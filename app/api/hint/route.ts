@@ -16,8 +16,20 @@ export async function POST(request: Request) {
     return Response.json({ error: "Paramètres manquants" }, { status: 400 });
   }
 
+  // Sans clé IA (mode « tout gratuit » / stores) : indices pédagogiques progressifs
   if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.startsWith("sk-ant-VOTRE")) {
-    return Response.json({ hint: "Configure ta clé ANTHROPIC_API_KEY dans .env.local pour activer les indices IA !" });
+    const n = hintCount ?? 0;
+    let hint: string;
+    if (!currentOutput?.trim()) {
+      hint = "Ton programme n'affiche rien pour l'instant. As-tu bien utilisé print() ? Lance ton code pour voir ce qu'il se passe. Tu vas y arriver ! 💪";
+    } else if (n < 1) {
+      hint = "Compare ta sortie avec la sortie attendue, caractère par caractère : les majuscules, les espaces et la ponctuation comptent ! Tu es sur la bonne voie. 🔍";
+    } else if (n < 2) {
+      hint = `Regarde bien la différence : on attend « ${expectedOutput} » et ton code affiche « ${currentOutput.trim()} ». Qu'est-ce qui change entre les deux ? Tu y es presque ! ✨`;
+    } else {
+      hint = "Relis la consigne lentement, puis vérifie ton code ligne par ligne. Les erreurs se cachent souvent dans les petits détails (guillemets, parenthèses, orthographe). Courage, tu y es presque ! 🚀";
+    }
+    return Response.json({ hint });
   }
 
   try {

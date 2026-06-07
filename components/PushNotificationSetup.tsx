@@ -26,6 +26,7 @@ export default function PushNotificationSetup() {
     setState(Notification.permission === "granted" ? "granted" : "unknown");
   }, []);
 
+  if (!VAPID_PUBLIC_KEY) return null; // pas de clé configurée → pas de bannière
   if (dismissed || state === "granted" || state === "denied") return null;
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator) || !("PushManager" in window)) return null;
 

@@ -354,7 +354,9 @@
     "promo_used": "⚠️ Ce code a déjà été utilisé sur cet appareil.",
     "promo_invalid": "❌ Code invalide. Vérifie l'orthographe !",
     "payment_secure": "Paiement sécurisé via PayPal · Les gemmes sont créditées instantanément",
-    "gems_hint": "💎 Gagne des gemmes en ouvrant des coffres dans la série quotidienne ou en terminant des niveaux !"
+    "gems_hint": "💎 Gagne des gemmes en ouvrant des coffres dans la série quotidienne ou en terminant des niveaux !",
+    "gems_free_title": "Ici, tout se gagne en jouant !",
+    "gems_free_desc": "Termine des leçons, relève des défis, ouvre des coffres et accomplis des quêtes pour gagner des gemmes."
   },
   "Leaderboard": {
     "title": "Hall of Fame 🏆",

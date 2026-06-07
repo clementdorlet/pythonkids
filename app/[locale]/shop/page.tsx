@@ -18,6 +18,7 @@ import {
   COLOR_THEMES, getOwnedThemes, getActiveThemeId, purchaseTheme, applyTheme,
 } from "@/lib/themes";
 import { apiFetch } from "@/lib/api";
+import { PAYMENTS_ENABLED } from "@/lib/features";
 
 type Tab = "skins" | "stickers" | "titles" | "consumables" | "themes" | "gems";
 type RarityFilter = ShopRarity | "all";
@@ -471,7 +472,17 @@ export default function ShopPage() {
         )}
 
         {tab === "gems" && (
-          <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "", currency: "EUR" }}>
+          <div className="space-y-6">
+            {/* Mode « tout gratuit » (stores) : pas d'achats réels, les gemmes se gagnent en jouant */}
+            {!PAYMENTS_ENABLED && (
+              <div className="bg-white dark:bg-slate-800 border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-2">💎</div>
+                <p className="font-extrabold text-gray-800 dark:text-white text-sm">{t("gems_free_title")}</p>
+                <p className="text-xs text-gray-400 dark:text-slate-500 mt-2">{t("gems_free_desc")}</p>
+              </div>
+            )}
+            {PAYMENTS_ENABLED && (
+            <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "", currency: "EUR" }}>
             <div className="space-y-6">
               <p className="text-xs text-gray-400 dark:text-slate-500">{t("gems_desc")}</p>
               <div className="grid grid-cols-2 gap-3">
@@ -522,6 +533,9 @@ export default function ShopPage() {
                   );
                 })}
               </div>
+            </div>
+            </PayPalScriptProvider>
+            )}
 
               <div className="bg-white dark:bg-slate-800 border-2 border-dashed border-purple-200 dark:border-purple-800 rounded-2xl p-5">
                 <div className="flex items-center gap-2 mb-1">
@@ -548,9 +562,10 @@ export default function ShopPage() {
                 {promoStatus === "used" && <p className="text-orange-500 text-xs font-bold mt-2">{t("promo_used")}</p>}
                 {promoStatus === "invalid" && <p className="text-red-500 text-xs font-bold mt-2">{t("promo_invalid")}</p>}
               </div>
-              <p className="text-center text-[11px] text-gray-300 dark:text-slate-600">{t("payment_secure")}</p>
-            </div>
-          </PayPalScriptProvider>
+              {PAYMENTS_ENABLED && (
+                <p className="text-center text-[11px] text-gray-300 dark:text-slate-600">{t("payment_secure")}</p>
+              )}
+          </div>
         )}
 
         {tab !== "gems" && (

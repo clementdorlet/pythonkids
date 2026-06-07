@@ -20,6 +20,7 @@ import {
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { RARITY_COLORS_SHOP } from "@/lib/shop";
 import { apiFetch } from "@/lib/api";
+import { PAYMENTS_ENABLED } from "@/lib/features";
 
 const RARITY_LABEL: Record<string, string> = {
   common: "Commun", rare: "Rare", epic: "Épique", legendary: "Légendaire",
@@ -183,8 +184,8 @@ export default function BattlePassPage() {
           ))}
         </div>
 
-        {/* Bouton premium */}
-        {!state.isPremium && (
+        {/* Bouton premium (masqué en mode « tout gratuit » sans PayPal) */}
+        {!state.isPremium && PAYMENTS_ENABLED && (
           <div className="flex flex-col items-center gap-2">
             <p className="text-sm text-gray-400">
               {t("premium_price")}
