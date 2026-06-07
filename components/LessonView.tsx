@@ -32,6 +32,7 @@ import LevelComplete from "./LevelComplete";
 import LessonConceptCards from "./LessonConceptCards";
 
 import type { Lesson } from "@/lib/lessons";
+import { apiFetch } from "@/lib/api";
 
 interface LessonViewProps {
   levelId: number;
@@ -136,7 +137,7 @@ export default function LessonView({
     const newScore = calculateScore();
     const storedUser = localStorage.getItem("pythonkids_username");
     if (storedUser) {
-      fetch("/api/leaderboard", {
+      apiFetch("/api/leaderboard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: storedUser, score: newScore }),

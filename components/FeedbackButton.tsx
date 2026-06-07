@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -23,7 +24,7 @@ export default function FeedbackButton() {
     if (!message.trim()) return;
     setStatus("sending");
     try {
-      const res = await fetch("/api/feedback", {
+      const res = await apiFetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name.trim() || undefined, message: message.trim(), page: pathname }),

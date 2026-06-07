@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { apiFetch } from "@/lib/api";
 
 const HEARTBEAT_INTERVAL = 30_000;
 const ACTIVITY_INTERVAL  = 4_500;
@@ -54,7 +55,7 @@ export default function OnlineCounter() {
   async function heartbeat() {
     if (!sessionId.current) return;
     try {
-      const res = await fetch("/api/online", {
+      const res = await apiFetch("/api/online", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId: sessionId.current }),

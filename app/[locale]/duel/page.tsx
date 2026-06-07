@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import AppHeader from "@/components/AppHeader";
 import { CHALLENGES } from "@/lib/challenges";
+import { apiFetch } from "@/lib/api";
 
 export default function DuelPage() {
   const t = useTranslations("Duel");
@@ -28,7 +29,7 @@ export default function DuelPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/duel", {
+      const res = await apiFetch("/api/duel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "create", username, challengeId: selectedChallenge }),
@@ -47,7 +48,7 @@ export default function DuelPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/duel", {
+      const res = await apiFetch("/api/duel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "join", username, roomId: joinCode.trim().toUpperCase() }),

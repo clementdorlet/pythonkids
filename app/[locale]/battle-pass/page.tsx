@@ -19,6 +19,7 @@ import {
 } from "@/lib/battlePass";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { RARITY_COLORS_SHOP } from "@/lib/shop";
+import { apiFetch } from "@/lib/api";
 
 const RARITY_LABEL: Record<string, string> = {
   common: "Commun", rare: "Rare", epic: "Épique", legendary: "Légendaire",
@@ -199,7 +200,7 @@ export default function BattlePassPage() {
                   style={{ layout: "horizontal", color: "gold", shape: "pill", label: "pay", height: 40 }}
                   createOrder={async () => {
                     setPaypalError(null);
-                    const res = await fetch("/api/paypal/create-order", {
+                    const res = await apiFetch("/api/paypal/create-order", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ packId: "premium_bp" }),
@@ -209,7 +210,7 @@ export default function BattlePassPage() {
                     return data.id;
                   }}
                   onApprove={async (data) => {
-                    const res = await fetch("/api/paypal/capture-order", {
+                    const res = await apiFetch("/api/paypal/capture-order", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ orderID: data.orderID }),

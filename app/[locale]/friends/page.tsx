@@ -8,6 +8,7 @@ import AppHeader from "@/components/AppHeader";
 import { CHALLENGES } from "@/lib/challenges";
 import type { LeaderboardEntry } from "@/app/api/leaderboard/route";
 import type { ActivityEvent } from "@/app/api/activity/route";
+import { apiFetch } from "@/lib/api";
 
 interface FriendEntry extends LeaderboardEntry {
   rank: number;
@@ -63,8 +64,8 @@ export default function FriendsPage() {
     setLoading(true);
     try {
       const [friendsRes, lbRes] = await Promise.all([
-        fetch(`/api/friends?username=${encodeURIComponent(name)}`),
-        fetch("/api/leaderboard"),
+        apiFetch(`/api/friends?username=${encodeURIComponent(name)}`),
+        apiFetch("/api/leaderboard"),
       ]);
       const friends: string[] = await friendsRes.json();
       const lb: LeaderboardEntry[] = await lbRes.json();
@@ -81,7 +82,7 @@ export default function FriendsPage() {
       setFriendEntries(entries);
 
       if (friends.length > 0) {
-        const actRes = await fetch(`/api/activity?friends=${friends.map(encodeURIComponent).join(",")}`);
+        const actRes = await apiFetch(`/api/activity?friends=${friends.map(encodeURIComponent).join(",")}`);
         const act: ActivityEvent[] = await actRes.json();
         setActivities(act);
       }
@@ -104,7 +105,7 @@ export default function FriendsPage() {
     setAddLoading(true);
     setAddError("");
     try {
-      const res = await fetch("/api/friends", {
+      const res = await apiFetch("/api/friends", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "add", username, friend }),
@@ -124,7 +125,7 @@ export default function FriendsPage() {
 
   async function handleRemove(friend: string) {
     if (!username) return;
-    await fetch("/api/friends", {
+    await apiFetch("/api/friends", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "remove", username, friend }),
@@ -136,7 +137,7 @@ export default function FriendsPage() {
     if (!username || !duelFriend) return;
     setDuelLoading(true);
     try {
-      const res = await fetch("/api/duel", {
+      const res = await apiFetch("/api/duel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "create", username, challengeId: duelChallenge }),

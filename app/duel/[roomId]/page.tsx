@@ -21,6 +21,7 @@ import type { DuelRoom } from "@/app/api/duel/route";
 import Confetti from "@/components/Confetti";
 import { useIsMobile } from "@/lib/useIsMobile";
 import { parsePythonError } from "@/lib/pythonErrors";
+import { apiFetch } from "@/lib/api";
 
 export default function DuelRoomPage() {
   const params = useParams<{ roomId: string }>();
@@ -52,7 +53,7 @@ export default function DuelRoomPage() {
 
   const fetchRoom = useCallback(async () => {
     try {
-      const res = await fetch(`/api/duel?roomId=${roomId}`);
+      const res = await apiFetch(`/api/duel?roomId=${roomId}`);
       if (!res.ok) { setError("Room introuvable."); return; }
       const data: DuelRoom = await res.json();
       setRoom(data);
@@ -148,7 +149,7 @@ export default function DuelRoomPage() {
       const newScore = calculateScore();
       const storedUser = localStorage.getItem("pythonkids_username");
       if (storedUser) {
-        fetch("/api/leaderboard", {
+        apiFetch("/api/leaderboard", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: storedUser, score: newScore }),
@@ -183,7 +184,7 @@ export default function DuelRoomPage() {
         setConfetti(true);
         setTimeout(() => setConfetti(false), 100);
         // Notifier le serveur
-        await fetch("/api/duel", {
+        await apiFetch("/api/duel", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "solve", roomId, username }),

@@ -14,6 +14,7 @@ import { trackChallengeWeek, refreshWeeklyQuests } from "@/lib/weeklyQuests";
 import { BADGES, type Badge } from "@/lib/progress";
 import { updateStreak } from "@/lib/streak";
 import Confetti from "./Confetti";
+import { apiFetch } from "@/lib/api";
 
 interface ChallengeEditorProps {
   challengeId: string;
@@ -177,7 +178,7 @@ export default function ChallengeEditor({
     setAiHintLoading(true);
     setAiHint("");
     try {
-      const res = await fetch("/api/hint", {
+      const res = await apiFetch("/api/hint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

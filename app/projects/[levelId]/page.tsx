@@ -7,6 +7,7 @@ import AppHeader from "@/components/AppHeader";
 import { GUIDED_PROJECTS, completeProjectStep, getProjectStepsDone } from "@/lib/projects";
 import { getPyodide } from "@/lib/pyodide";
 import { parsePythonError } from "@/lib/pythonErrors";
+import { apiFetch } from "@/lib/api";
 
 export default function ProjectPage() {
   const params = useParams();
@@ -89,7 +90,7 @@ export default function ProjectPage() {
     setAiLoading(true);
     setAiHint("");
     try {
-      const res = await fetch("/api/hint", {
+      const res = await apiFetch("/api/hint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

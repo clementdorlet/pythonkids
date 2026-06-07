@@ -1,4 +1,5 @@
 import { PROFILE_KEYS } from "./profiles";
+import { apiFetch } from "./api";
 
 /**
  * Compte en ligne : lie le profil local à un compte serveur (pseudo + PIN)
@@ -57,7 +58,7 @@ function applySnapshot(data: Record<string, string>): void {
 }
 
 async function post(payload: object): Promise<{ ok: boolean; status: number; body: Record<string, unknown> }> {
-  const res = await fetch("/api/account", {
+  const res = await apiFetch("/api/account", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

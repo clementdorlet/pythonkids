@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { getPyodide } from "@/lib/pyodide";
 import { parsePythonError } from "@/lib/pythonErrors";
 import type { LessonExercise as ExerciseData } from "@/lib/lessons";
+import { apiFetch } from "@/lib/api";
 
 interface Props {
   exercise: ExerciseData;
@@ -38,7 +39,7 @@ export default function LessonExercise({ exercise, levelColor, levelName, onAtte
     setAiHintLoading(true);
     setAiHint("");
     try {
-      const res = await fetch("/api/hint", {
+      const res = await apiFetch("/api/hint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

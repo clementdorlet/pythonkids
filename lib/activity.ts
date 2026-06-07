@@ -1,3 +1,4 @@
+import { apiFetch } from "./api";
 // Fire-and-forget : poste un événement d'activité sur le serveur
 export function postActivity(
   type: "lesson" | "badge" | "challenge" | "streak",
@@ -6,7 +7,7 @@ export function postActivity(
   if (typeof window === "undefined") return;
   const username = localStorage.getItem("pythonkids_username");
   if (!username) return;
-  fetch("/api/activity", {
+  apiFetch("/api/activity", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, type, detail }),

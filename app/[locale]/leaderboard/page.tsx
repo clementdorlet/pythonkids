@@ -9,6 +9,7 @@ import { getXP, getWeeklyXP } from "@/lib/xp";
 import { getEquippedSkin } from "@/lib/shop";
 import { SHOP_SKINS } from "@/lib/shop";
 import type { LeaderboardEntry } from "@/app/api/leaderboard/route";
+import { apiFetch } from "@/lib/api";
 
 type Period = "all" | "month" | "week";
 
@@ -96,7 +97,7 @@ export default function LeaderboardPage() {
     if (name && score > 0) {
       const equippedSkinId = getEquippedSkin();
       const skinGradient = equippedSkinId ? SHOP_SKINS.find((s) => s.id === equippedSkinId)?.gradient : undefined;
-      fetch("/api/leaderboard", {
+      apiFetch("/api/leaderboard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: name, score, skinGradient }),
@@ -105,7 +106,7 @@ export default function LeaderboardPage() {
         .catch(() => {});
     }
 
-    fetch("/api/leaderboard")
+    apiFetch("/api/leaderboard")
       .then((r) => r.json())
       .then((data: LeaderboardEntry[]) => { setEntries(data); setLoading(false); })
       .catch(() => setLoading(false));

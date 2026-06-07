@@ -32,6 +32,7 @@ import { getDuelWins } from "@/lib/duels";
 import { getUnlockedAchievements, checkAchievements, ACHIEVEMENTS, type Achievement } from "@/lib/achievements";
 import { isAudioEnabled, toggleAudio } from "@/lib/sounds";
 import type { ActivityEvent } from "@/app/api/activity/route";
+import { apiFetch } from "@/lib/api";
 
 interface FriendStatus {
   name: string;
@@ -138,13 +139,13 @@ export default function ProfilePage() {
               .filter((n) => n !== name)
           : [];
 
-        const friendsRes = await fetch(`/api/friends?username=${encodeURIComponent(name)}`);
+        const friendsRes = await apiFetch(`/api/friends?username=${encodeURIComponent(name)}`);
         const remoteNames: string[] = await friendsRes.json();
 
         const allNames = [...new Set([...localNames, ...remoteNames])];
         if (allNames.length === 0) { setFriendStatuses([]); return; }
 
-        const actRes = await fetch(`/api/activity?friends=${allNames.map(encodeURIComponent).join(",")}`);
+        const actRes = await apiFetch(`/api/activity?friends=${allNames.map(encodeURIComponent).join(",")}`);
         const events: ActivityEvent[] = await actRes.json();
         const now = Date.now();
         const statuses: FriendStatus[] = allNames.map((f) => {

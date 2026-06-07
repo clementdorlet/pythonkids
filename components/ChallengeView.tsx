@@ -23,6 +23,7 @@ import { addBattlePassXP } from "@/lib/battlePass";
 import { calculateScore } from "@/lib/score";
 import Confetti from "./Confetti";
 import BadgeCelebration from "./BadgeCelebration";
+import { apiFetch } from "@/lib/api";
 
 interface ChallengeViewProps {
   challenge: Challenge;
@@ -206,7 +207,7 @@ export default function ChallengeView({
         const newScore = calculateScore();
         const storedUser = localStorage.getItem("pythonkids_username");
         if (storedUser) {
-          fetch("/api/leaderboard", {
+          apiFetch("/api/leaderboard", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: storedUser, score: newScore }),

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/lib/api";
 
 function getSessionId(): string {
   const key = "pk_session";
@@ -21,7 +22,7 @@ export default function HomeOnlineWidget() {
     async function heartbeat() {
       if (!sessionId.current) return;
       try {
-        const res = await fetch("/api/online", {
+        const res = await apiFetch("/api/online", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId: sessionId.current }),

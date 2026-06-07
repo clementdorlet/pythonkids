@@ -17,6 +17,7 @@ import { playPurchaseSound } from "@/lib/sounds";
 import {
   COLOR_THEMES, getOwnedThemes, getActiveThemeId, purchaseTheme, applyTheme,
 } from "@/lib/themes";
+import { apiFetch } from "@/lib/api";
 
 type Tab = "skins" | "stickers" | "titles" | "consumables" | "themes" | "gems";
 type RarityFilter = ShopRarity | "all";
@@ -497,13 +498,13 @@ export default function ShopPage() {
                         <PayPalButtons
                           style={{ layout: "vertical", shape: "pill", label: "pay", height: 40 }}
                           createOrder={async () => {
-                            const res = await fetch("/api/paypal/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ packId: pack.id }) });
+                            const res = await apiFetch("/api/paypal/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ packId: pack.id }) });
                             const data = await res.json() as { id?: string; error?: string };
                             if (!data.id) throw new Error(data.error ?? t("gem_error"));
                             return data.id;
                           }}
                           onApprove={async (data) => {
-                            const res = await fetch("/api/paypal/capture-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderID: data.orderID }) });
+                            const res = await apiFetch("/api/paypal/capture-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderID: data.orderID }) });
                             const result = await res.json() as { gems?: number; error?: string };
                             if (!result.gems) throw new Error(result.error ?? t("gem_payment_failed"));
                             addGems(result.gems);
